@@ -114,9 +114,25 @@
     <Link>
       <AdditionalDependencies>glew64.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <CudaCompile>
+      <TargetMachinePlatform Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">64</TargetMachinePlatform>
+    </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <CudaCompile Include="main.cu" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="readme.md">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="circle.h" />
+    <ClInclude Include="globals.h" />
+    <ClInclude Include="player.h" />
+    <ClInclude Include="rect.h" />
+    <ClInclude Include="utils.h" />
+    <ClInclude Include="vec.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

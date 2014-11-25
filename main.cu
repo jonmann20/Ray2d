@@ -1,7 +1,3 @@
-// System 
-#include <iostream>
-#include <windows.h>
-
 // OpenGL
 #include <GL/glew.h>
 #include <GL/freeglut.h>
@@ -10,31 +6,14 @@
 #include <cuda_runtime.h>
 #include <cuda_gl_interop.h>
 
-using namespace std;
+// FlappyRay helpers
+#include "utils.h"			// includes: iostream, namespace std
+#include "globals.h"		// includes: vec, player
+#include "rect.h"			// includes: vec
+#include "circle.h"			// includes: vec
 
-#define printV(v) cout << #v << ": " << v << endl
-
-class Vec {
-public:
-	float x, y;
-
-	Vec() {
-	
-	}
-	
-	Vec(float xx, float yy) {
-		x = xx;
-		y = yy;
-	}
-};
-
-Vec box1pos;
-
-int frameCount = 0;
-float fps = 0;
-int currentTime = 0, previousTime = 0;
-
-GLvoid *font_style = GLUT_BITMAP_HELVETICA_18;//GLUT_BITMAP_TIMES_ROMAN_24;
+// OpenGL globals
+GLvoid* font_style = GLUT_BITMAP_HELVETICA_12;
 
 #pragma region CUDA
 __global__
@@ -60,68 +39,53 @@ void testCuda() {
 
 	cout << "a: " << a << endl;
 }
-
-
 #pragma endregion CUDA
 
-
 #pragma region Update
-//void input(unsigned char key, int xmouse, int ymouse) {
-//	switch(key) {
-//		case 'w':
-//			box1pos.y += 0.1;
-//			break;
-//		case 'a':
-//			break;
-//		case 's':
-//			box1pos.y -= 0.1;
-//			break;
-//		case 'd':
-//			break;
-//	}
-//
-//	printV(box1pos.x);
-//	printV(box1pos.y);
-//}
-
-void keyboard(int key, int x, int y) {
+void keyboard(unsigned char key, int x, int y) {
 	printV(key);
+
 	switch(key) {
-		case 100:		// left arrow
-			box1pos.x -= 0.1;
+		case 'w':
+			player.getPos().y += 0.1;
 			break;
-		case 101:		// up arrow
-			box1pos.y += 0.1;
+		case 'a':
+			player.getPos().x -= 0.1;
 			break;
-		case 102:		// right arrow
-			box1pos.x += 0.1;
+		case 's':
+			player.getPos().y -= 0.1;
 			break;
-		case 103:		// down arrow
-			box1pos.y -= 0.1;
+		case 'd':
+			player.getPos().x += 0.1;
+			break;
+		case 32:			// spacebar
+			debugRays = !debugRays;
+			break;
+		case 27:			// escape
+			exit(0);
 			break;
 	}
 	glutPostRedisplay();
 }
 
 void calculateFPS() {
-	//  Increase frame count
-	frameCount++;
+	++frameCount;
 
-	//  Get the number of milliseconds since glutInit called 
-	//  (or first call to glutGet(GLUT ELAPSED TIME)).
+	// Get the number of milliseconds since glutInit called 
+	// (or first call to glutGet(GLUT ELAPSED TIME)).
 	currentTime = glutGet(GLUT_ELAPSED_TIME);
 
-	//  Calculate time passed
+	// Calculate time passed
 	int timeInterval = currentTime - previousTime;
 
 	if(timeInterval > 1000) {
-		//  calculate the number of frames per second
+		// calculate the number of frames per second
 		fps = frameCount / (timeInterval / 1000.0f);
 
-		//  Set time
+		// Set time
 		previousTime = currentTime;
 
-		//  Reset frame count
+		// Reset frame count
 		frameCount = 0;
 	}
 }
@@ -134,71 +98,121 @@ void update() {
 #pragma endregion Update
 
 #pragma region Render
-void printw(float x, float y, float z, char* format, ...) {
-	va_list args;	//  Variable argument list
-	int len;		//	String length
-	int i;			//  Iterator
-	char * text;	//	Text
-
-	//  Initialize a variable argument list
+void drawText(Vec pos, char* format, ...) {
+	// Initialize a variable argument list
+	va_list args;
 	va_start(args, format);
 
-	//  Return the number of characters in the string referenced the list of arguments.
-	//  _vscprintf doesn't count terminating '\0' (that's why +1)
-	len = _vscprintf(format, args) + 1;
+	// Return the number of characters in the string referenced the list of arguments.
+	// _vscprintf doesn't count terminating '\0' (that's why +1)
+	int len = _vscprintf(format, args) + 1;
 
-	//  Allocate memory for a string of the specified size
-	text = (char *)malloc(len * sizeof(char));
+	// Allocate memory for a string of the specified size
+	char* text = (char*)malloc(len * sizeof(char));
 
-	//  Write formatted output using a pointer to the list of arguments
+	// Write formatted output using a pointer to the list of arguments
 	vsprintf_s(text, len, format, args);
 
-	//  End using variable argument list 
+	// End using variable argument list 
 	va_end(args);
 
-	//  Specify the raster position for pixel operations.
-	glRasterPos3f(x, y, z);
+	// Specify the raster position for pixel operations
+	glRasterPos2f(pos.x, pos.y);
 
-	//  Draw the characters one by one
-	for(i = 0; text[i] != '\0'; i++)
+	for(int i=0; text[i] != '\0'; ++i) {
 		glutBitmapCharacter(font_style, text[i]);
+	}
 
-	//  Free the allocated memory for the string
 	free(text);
 }
 
 void drawFPS() {
-	//  Load the identity matrix so that FPS string being drawn
-	//  won't get animates
+	//  Load the identity matrix so that FPS string being drawn won't get animates
 	glLoadIdentity();
 
-	//  Print the FPS to the window
-	printw(0.77, 0.9, 0, "FPS: %4.2f", fps);
+	glColor3f(0.6, 0.6, 0);
+	drawText(Vec(DEBUG_INFOX, 0.92), "FPS: %4.2f", fps);
 }
 
 void drawRect(Vec pos) {
 	glBegin(GL_POLYGON);
-	glVertex3f(pos.x, pos.y, 0.0);
-	glVertex3f(pos.x + 0.5, pos.y, 0.0);
-	glVertex3f(pos.x + 0.5, pos.y + 0.5, 0.0);
-	glVertex3f(pos.x, pos.y + 0.5, 0.0);
+		glVertex2f(pos.x, pos.y);
+		glVertex2f(pos.x + 0.5, pos.y);
+		glVertex2f(pos.x + 0.5, pos.y + 0.5);
+		glVertex2f(pos.x, pos.y + 0.5);
+	glEnd();
+}
+
+void drawCircle(Vec pos) {
+	glColor3f(1, 1, 0.5);
+	glBegin(GL_POLYGON);
+		double radius = 0.08;
+		for(double i = 0; i < 2 * PI; i += PI / 24) { //<-- Change this Value
+			glVertex2f(pos.x + (cos(i) * radius), pos.y + (sin(i) * 1.6 * radius));
+		}
+	glEnd();
+
+	glColor3f(0, 0, 0);
+	drawText(pos + Vec(-0.025, -0.01), "Player");
+}
+
+void drawLight(Vec pos) {
+	float offsetY = 0.08;
+
+	glColor3f(1, 0.95686, 0.89804);		// warm flourescent (http://planetpixelemporium.com/tutorialpages/light.html)
+	glBegin(GL_POLYGON);
+		glVertex2f(pos.x, pos.y);
+		glVertex2f(pos.x + 0.08, pos.y + offsetY);
+		glVertex2f(pos.x + 0.24, pos.y + offsetY);
+		glVertex2f(pos.x + 0.32, pos.y);
+	glEnd();
+
+	glColor3f(0, 0, 0);
+	drawText(pos + Vec(0.115, 0.025), "Spot Light");
+}
+
+void drawRays() {
+	glColor3f(0.6, 0.6, 0);
+	drawText(Vec(DEBUG_INFOX, 0.87), "DebugRays On");
+
+	Vec pos(0, 0.85);
+	Vec size(0.32, 0.08);
+
+	glColor3f(0.8, 0, 0);
+	glBegin(GL_LINES);
+		glVertex2f(pos.x + size.x/2, pos.y);
+		glVertex2f(pos.x + size.x/2, pos.y - (2 - (1-pos.y)));
 	glEnd();
 }
 
 void render() {
 	glClear(GL_COLOR_BUFFER_BIT);
 
+	// Level
+	drawLight(Vec(0, 0.85));
+
+	// Player
+	drawCircle(player.getPos());
+
+	// Debug
 	drawFPS();
-	drawRect(box1pos);
+
+	if(debugRays) {
+		drawRays();
+	}
+	else {
+		glColor3f(0.6, 0.6, 0);
+		drawText(Vec(DEBUG_INFOX, 0.87), "DebugRays Off");
+	}
 
 	glFlush();
 }
 #pragma endregion Render
 
-void gameLoop() {
-	update();
-	render();
-}
+//void gameLoop() {
+//	update();
+//	render();
+//}
 
 int main(int argc, char* argv[]) {
 	glutInit(&argc, argv);
@@ -209,11 +223,10 @@ int main(int argc, char* argv[]) {
 	glutDisplayFunc(render);
 	glutIdleFunc(update);
 
-	//glutKeyboardFunc(input);
-	glutSpecialFunc(keyboard);
+	glutKeyboardFunc(keyboard);
+	//glutSpecialFunc(keyboard);
 
 	glutMainLoop();
 
-	cin.get();
 	return EXIT_SUCCESS;
 }
