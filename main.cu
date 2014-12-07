@@ -91,8 +91,14 @@ void calculateFPS() {
 }
 
 
+void checkRayCollision() {
+	// for every game object
+
+}
+
 void update() {
 	calculateFPS();
+	checkRayCollision();
 }
 
 #pragma endregion Update
@@ -134,13 +140,25 @@ void drawFPS() {
 	drawText(Vec(DEBUG_INFOX, 0.92), "FPS: %4.2f", fps);
 }
 
-void drawRect(Vec pos) {
-	glBegin(GL_POLYGON);
-		glVertex2f(pos.x, pos.y);
-		glVertex2f(pos.x + 0.5, pos.y);
-		glVertex2f(pos.x + 0.5, pos.y + 0.5);
-		glVertex2f(pos.x, pos.y + 0.5);
-	glEnd();
+// Draws a rectangle in chunks
+void drawRect(Vec pos, vector<Rect> body) {
+	for(auto part : body) {
+		float x = pos.x + part.pos.x;
+		float y = pos.y + part.pos.y;
+
+		glColor3f(part.color.x, part.color.y, part.color.z);
+
+		glBegin(GL_POLYGON);
+			glVertex2f(x, y);
+			glVertex2f(x + part.size.x, y);
+			glVertex2f(x + part.size.x, y + part.size.y);
+			glVertex2f(x, y + part.size.y);
+		glEnd();
+	}
+
+
+	//glColor3f(0, 0, 0);
+	//drawText(pos + Vec(-0.025, -0.01), "Player");
 }
 
 void drawCircle(Vec pos) {
@@ -151,9 +169,6 @@ void drawCircle(Vec pos) {
 			glVertex2f(pos.x + (cos(i) * radius), pos.y + (sin(i) * 1.6 * radius));
 		}
 	glEnd();
-
-	glColor3f(0, 0, 0);
-	drawText(pos + Vec(-0.025, -0.01), "Player");
 }
 
 void drawLight(Vec pos) {
@@ -192,7 +207,7 @@ void render() {
 	drawLight(Vec(0, 0.85));
 
 	// Player
-	drawCircle(player.getPos());
+	drawRect(player.getPos(), player.body);
 
 	// Debug
 	drawFPS();
@@ -215,9 +230,12 @@ void render() {
 //}
 
 int main(int argc, char* argv[]) {
+	player = Player(0, 0, 0.2, 0.2);
+
+
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_SINGLE);
-	glutInitWindowSize(1280, 720);
+	glutInitWindowSize(720, 720);		// 1280 x 720
 	glutInitWindowPosition(320, 180);
 	glutCreateWindow("FlappyRay Engine Demo");
 	glutDisplayFunc(render);

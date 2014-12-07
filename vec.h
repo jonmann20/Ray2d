@@ -12,10 +12,9 @@ public:
 
 	Vec() {}
 
-	Vec(float xx, float yy) {
-		x = xx;
-		y = yy;
-	}
+	Vec(float x, float y)
+		: x(x), y(y)
+	{}
 
 	Vec operator+(const Vec& other) {
 		return Vec(x + other.x, y + other.y);
@@ -41,6 +40,20 @@ public:
 	float length() {
 		return sqrt(x*x + y*y);
 	}
+};
+
+/*
+* A 3D vector
+*/
+class Vec3 {
+public:
+	float x, y, z;
+
+	Vec3() {}
+
+	Vec3(float x, float y, float z)
+		: x(x), y(y), z(z)
+	{}
 };
 
 #endif // VEC_H

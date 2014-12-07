@@ -1,47 +1,10 @@
-﻿Build started 11/24/2014 8:18:48 PM.
+﻿Build started 11/25/2014 10:35:24 AM.
      1>Project "C:\ProgramData\NVIDIA Corporation\CUDA Samples\v6.5\2_Graphics\FlappyRay\simpleGL_vs2013.vcxproj" on node 2 (Build target(s)).
-     1>AddCudaCompileDeps:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\cl.exe /E /nologo /showIncludes /TP /D__CUDACC__ /DWIN32 /DWIN32 /D_MBCS /D_MBCS /I./ /I../../common/inc /I./ /I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\/include" /I../../common/inc /I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\bin" /I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include" /I. /FIcuda_runtime.h /c "C:\ProgramData\NVIDIA Corporation\CUDA Samples\v6.5\2_Graphics\FlappyRay\main.cu" 
-       CudaBuild:
-         Compiling CUDA source file main.cu...
-         cmd.exe /C "C:\Users\jon\AppData\Local\Temp\tmpf8d9e17cd29547899498e01fa2df0b74.cmd"
-         "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\bin\nvcc.exe" -gencode=arch=compute_11,code=\"sm_11,compute_11\" -gencode=arch=compute_20,code=\"sm_20,compute_20\" -gencode=arch=compute_30,code=\"sm_30,compute_30\" -gencode=arch=compute_35,code=\"sm_35,compute_35\" -gencode=arch=compute_37,code=\"sm_37,compute_37\" -gencode=arch=compute_50,code=\"sm_50,compute_50\" --use-local-env --cl-version 2013 -ccbin "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin"  -I./ -I../../common/inc -I./ -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\/include" -I../../common/inc -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include"  -G   --keep-dir Debug -maxrregcount=0  --machine 32 --compile -cudart static -Xcompiler "/wd 4819"  -g   -DWIN32 -DWIN32 -D_MBCS -D_MBCS -Xcompiler "/EHsc /W3 /nologo /Od /Zi /RTC1 /MTd  " -o Win32/Debug/main.cu.obj "C:\ProgramData\NVIDIA Corporation\CUDA Samples\v6.5\2_Graphics\FlappyRay\main.cu"
-         
-         C:\ProgramData\NVIDIA Corporation\CUDA Samples\v6.5\2_Graphics\FlappyRay
-         » "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\bin\nvcc.exe" -gencode=arch=compute_11,code=\"sm_11,compute_11\" -gencode=arch=compute_20,code=\"sm_20,compute_20\" -gencode=arch=compute_30,code=\"sm_30,compute_30\" -gencode=arch=compute_35,code=\"sm_35,compute_35\" -gencode=arch=compute_37,code=\"sm_37,compute_37\" -gencode=arch=compute_50,code=\"sm_50,compute_50\" --use-local-env --cl-version 2013 -ccbin "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin"  -I./ -I../../common/inc -I./ -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\/include" -I../../common/inc -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\include"  -G   --keep-dir Debug -maxrregcount=0  --machine 32 --compile -cudart static -Xcompiler "/wd 4819"  -g   -DWIN32 -DWIN32 -D_MBCS -D_MBCS -Xcompiler "/EHsc /W3 /nologo /Od /Zi /RTC1 /MTd  " -o Win32/Debug/main.cu.obj "C:\ProgramData\NVIDIA Corporation\CUDA Samples\v6.5\2_Graphics\FlappyRay\main.cu" 
-     1>CUDACOMPILE : nvcc warning : The 'compute_11', 'compute_12', 'compute_13', 'sm_11', 'sm_12', and 'sm_13' architectures are deprecated, and may be removed in a future release.
-         main.cu
-     1>c:\programdata\nvidia corporation\cuda samples\v6.5\2_graphics\flappyray\globals.h(17): warning C4305: 'initializing' : truncation from 'double' to 'const float'
-     1>C:/ProgramData/NVIDIA Corporation/CUDA Samples/v6.5/2_Graphics/FlappyRay/main.cu(50): warning C4305: '+=' : truncation from 'double' to 'float'
-     1>C:/ProgramData/NVIDIA Corporation/CUDA Samples/v6.5/2_Graphics/FlappyRay/main.cu(53): warning C4305: '-=' : truncation from 'double' to 'float'
-     1>C:/ProgramData/NVIDIA Corporation/CUDA Samples/v6.5/2_Graphics/FlappyRay/main.cu(56): warning C4305: '-=' : truncation from 'double' to 'float'
-     1>C:/ProgramData/NVIDIA Corporation/CUDA Samples/v6.5/2_Graphics/FlappyRay/main.cu(59): warning C4305: '+=' : truncation from 'double' to 'float'
-     1>C:/ProgramData/NVIDIA Corporation/CUDA Samples/v6.5/2_Graphics/FlappyRay/main.cu(133): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>C:/ProgramData/NVIDIA Corporation/CUDA Samples/v6.5/2_Graphics/FlappyRay/main.cu(134): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>C:/ProgramData/NVIDIA Corporation/CUDA Samples/v6.5/2_Graphics/FlappyRay/main.cu(140): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>C:/ProgramData/NVIDIA Corporation/CUDA Samples/v6.5/2_Graphics/FlappyRay/main.cu(141): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>C:/ProgramData/NVIDIA Corporation/CUDA Samples/v6.5/2_Graphics/FlappyRay/main.cu(142): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>C:/ProgramData/NVIDIA Corporation/CUDA Samples/v6.5/2_Graphics/FlappyRay/main.cu(151): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>C:/ProgramData/NVIDIA Corporation/CUDA Samples/v6.5/2_Graphics/FlappyRay/main.cu(156): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>C:/ProgramData/NVIDIA Corporation/CUDA Samples/v6.5/2_Graphics/FlappyRay/main.cu(160): warning C4305: 'initializing' : truncation from 'double' to 'float'
-     1>C:/ProgramData/NVIDIA Corporation/CUDA Samples/v6.5/2_Graphics/FlappyRay/main.cu(162): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>C:/ProgramData/NVIDIA Corporation/CUDA Samples/v6.5/2_Graphics/FlappyRay/main.cu(165): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>C:/ProgramData/NVIDIA Corporation/CUDA Samples/v6.5/2_Graphics/FlappyRay/main.cu(166): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>C:/ProgramData/NVIDIA Corporation/CUDA Samples/v6.5/2_Graphics/FlappyRay/main.cu(167): warning C4244: 'argument' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>C:/ProgramData/NVIDIA Corporation/CUDA Samples/v6.5/2_Graphics/FlappyRay/main.cu(171): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>C:/ProgramData/NVIDIA Corporation/CUDA Samples/v6.5/2_Graphics/FlappyRay/main.cu(175): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>C:/ProgramData/NVIDIA Corporation/CUDA Samples/v6.5/2_Graphics/FlappyRay/main.cu(176): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>C:/ProgramData/NVIDIA Corporation/CUDA Samples/v6.5/2_Graphics/FlappyRay/main.cu(178): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>C:/ProgramData/NVIDIA Corporation/CUDA Samples/v6.5/2_Graphics/FlappyRay/main.cu(179): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>C:/ProgramData/NVIDIA Corporation/CUDA Samples/v6.5/2_Graphics/FlappyRay/main.cu(181): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>C:/ProgramData/NVIDIA Corporation/CUDA Samples/v6.5/2_Graphics/FlappyRay/main.cu(192): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>C:/ProgramData/NVIDIA Corporation/CUDA Samples/v6.5/2_Graphics/FlappyRay/main.cu(204): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>C:/ProgramData/NVIDIA Corporation/CUDA Samples/v6.5/2_Graphics/FlappyRay/main.cu(205): warning C4305: 'argument' : truncation from 'double' to 'float'
-       Link:
+     1>Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"../../bin/win32/Debug//simpleGL.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.5\lib\Win32" /LIBPATH:../../common/lib/Win32 glew32.lib cudart_static.lib freeglut.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"../../bin/win32/Debug/simpleGL.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"../../bin/win32/Debug/simpleGL.lib" /MACHINE:X86 Win32/Debug/main.cu.obj
          simpleGL_vs2013.vcxproj -> C:\ProgramData\NVIDIA Corporation\CUDA Samples\v6.5\2_Graphics\FlappyRay\../../bin/win32/Debug/simpleGL.exe
      1>Done Building Project "C:\ProgramData\NVIDIA Corporation\CUDA Samples\v6.5\2_Graphics\FlappyRay\simpleGL_vs2013.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:23.47
+Time Elapsed 00:00:00.59
