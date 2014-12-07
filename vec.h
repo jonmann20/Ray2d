@@ -6,34 +6,34 @@
 /*
  * A 2D vector
  */
-class Vec {
+class Vec2 {
 public:
 	float x, y;
 
-	Vec() {}
+	Vec2() {}
 
-	Vec(float x, float y)
+	Vec2(float x, float y)
 		: x(x), y(y)
 	{}
 
-	Vec operator+(const Vec& other) {
-		return Vec(x + other.x, y + other.y);
+	Vec2 operator+(const Vec2& other) {
+		return Vec2(x + other.x, y + other.y);
 	}
 
-	Vec operator-(const Vec& other) {
-		return Vec(x - other.x, y - other.y);
+	Vec2 operator-(const Vec2& other) {
+		return Vec2(x - other.x, y - other.y);
 	}
 
-	Vec operator/(const Vec& other) {
-		return Vec(x / other.x, y / other.y);
+	Vec2 operator/(const Vec2& other) {
+		return Vec2(x / other.x, y / other.y);
 	}
 
 	// dot/inner product
-	Vec operator*(const Vec& other) {
-		return Vec(x * other.x, y * other.y);
+	Vec2 operator*(const Vec2& other) {
+		return Vec2(x * other.x, y * other.y);
 	}
 
-	float cross(const Vec& other) {
+	float cross(const Vec2& other) {
 		return 0;		// z dimension always 0?
 	}
 
@@ -43,7 +43,7 @@ public:
 };
 
 /*
-* A 3D vector
+* A 3D Vector
 */
 class Vec3 {
 public:

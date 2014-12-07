@@ -16,6 +16,7 @@
       <Filter>geometry</Filter>
     </ClInclude>
     <ClInclude Include="player.h" />
+    <ClInclude Include="light.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="readme.md" />

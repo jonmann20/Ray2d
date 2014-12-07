@@ -3,9 +3,13 @@
 
 #include "vec.h"
 #include "player.h"
+#include "light.h"
 
 // player
 Player player;
+
+// Game Objects
+vector<Light> lights;
 
 // fps
 int frameCount = 0;

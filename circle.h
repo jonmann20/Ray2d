@@ -5,7 +5,7 @@
 
 class Circle {
 public:
-	Vec pos;
+	Vec2 pos;
 	float r;
 
 	Circle() {}

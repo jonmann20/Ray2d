@@ -15,6 +15,7 @@
 // OpenGL globals
 GLvoid* font_style = GLUT_BITMAP_HELVETICA_12;
 
+
 #pragma region CUDA
 __global__
 void square(int* a) {
@@ -43,20 +44,22 @@ void testCuda() {
 
 #pragma region Update
 void keyboard(unsigned char key, int x, int y) {
-	printV(key);
+	//printV(key);
+
+	const float dt = 0.08;
 
 	switch(key) {
 		case 'w':
-			player.getPos().y += 0.1;
+			player.pos.y += dt;
 			break;
 		case 'a':
-			player.getPos().x -= 0.1;
+			player.pos.x -= dt;
 			break;
 		case 's':
-			player.getPos().y -= 0.1;
+			player.pos.y -= dt;
 			break;
 		case 'd':
-			player.getPos().x += 0.1;
+			player.pos.x += dt;
 			break;
 		case 32:			// spacebar
 			debugRays = !debugRays;
@@ -92,19 +95,40 @@ void calculateFPS() {
 
 
 void checkRayCollision() {
-	// for every game object
+	for(const auto& light : lights) {
+		
+		for(auto& chunk : player.body) {
+		//auto chunk = player.body.back();
+		
+			float x = player.pos.x + chunk.pos.x;
+			//float y = player.pos.y + chunk.pos.y;
+		
+			//cout << x << " <= " << light.pos.x << " && " << (x + chunk.size.x) << " >= " << light.pos.x << endl;
 
+			if((x <= light.pos.x) &&
+			   ((x + chunk.size.x) >= light.pos.x)
+			){
+				//cout << "new color" << endl;
+				chunk.color = Vec3(1, 1, 1);
+			}
+			else {
+				//cout << "init color" << endl;
+				chunk.color = chunk.INIT_COLOR;
+			}
+		}
+	}
 }
 
 void update() {
-	calculateFPS();
 	checkRayCollision();
+
+	glutPostRedisplay();
 }
 
 #pragma endregion Update
 
 #pragma region Render
-void drawText(Vec pos, char* format, ...) {
+void drawText(Vec2 pos, char* format, ...) {
 	// Initialize a variable argument list
 	va_list args;
 	va_start(args, format);
@@ -137,11 +161,11 @@ void drawFPS() {
 	glLoadIdentity();
 
 	glColor3f(0.6, 0.6, 0);
-	drawText(Vec(DEBUG_INFOX, 0.92), "FPS: %4.2f", fps);
+	drawText(Vec2(DEBUG_INFOX, 0.92), "FPS: %4.2f", fps);
 }
 
 // Draws a rectangle in chunks
-void drawRect(Vec pos, vector<Rect> body) {
+void drawRect(Vec2 pos, vector<Rect> body) {
 	for(auto part : body) {
 		float x = pos.x + part.pos.x;
 		float y = pos.y + part.pos.y;
@@ -158,10 +182,10 @@ void drawRect(Vec pos, vector<Rect> body) {
 
 
 	//glColor3f(0, 0, 0);
-	//drawText(pos + Vec(-0.025, -0.01), "Player");
+	//drawText(pos + Vec2(-0.025, -0.01), "Player");
 }
 
-void drawCircle(Vec pos) {
+void drawCircle(Vec2 pos) {
 	glColor3f(1, 1, 0.5);
 	glBegin(GL_POLYGON);
 		double radius = 0.08;
@@ -171,75 +195,89 @@ void drawCircle(Vec pos) {
 	glEnd();
 }
 
-void drawLight(Vec pos) {
-	float offsetY = 0.08;
-
-	glColor3f(1, 0.95686, 0.89804);		// warm flourescent (http://planetpixelemporium.com/tutorialpages/light.html)
-	glBegin(GL_POLYGON);
-		glVertex2f(pos.x, pos.y);
-		glVertex2f(pos.x + 0.08, pos.y + offsetY);
-		glVertex2f(pos.x + 0.24, pos.y + offsetY);
-		glVertex2f(pos.x + 0.32, pos.y);
-	glEnd();
-
-	glColor3f(0, 0, 0);
-	drawText(pos + Vec(0.115, 0.025), "Spot Light");
-}
-
-void drawRays() {
-	glColor3f(0.6, 0.6, 0);
-	drawText(Vec(DEBUG_INFOX, 0.87), "DebugRays On");
-
-	Vec pos(0, 0.85);
-	Vec size(0.32, 0.08);
+void drawRays(Light light) {
+	//glColor3f(0.6, 0.6, 0);
+	//drawText(Vec2(DEBUG_INFOX, 0.87), "DebugRays On");
 
 	glColor3f(0.8, 0, 0);
 	glBegin(GL_LINES);
-		glVertex2f(pos.x + size.x/2, pos.y);
-		glVertex2f(pos.x + size.x/2, pos.y - (2 - (1-pos.y)));
+	glVertex2f(light.pos.x, light.pos.y);
+	glVertex2f(light.pos.x, light.pos.y - (2 - (1 - light.pos.y)));
 	glEnd();
+}
+
+void drawLight(Light light) {
+	float offsetY = 0.08;
+
+	glColor3f(light.color.x, light.color.y, light.color.z);
+	glBegin(GL_POLYGON);
+		glVertex2f(light.pos.x, light.pos.y);
+		glVertex2f(light.pos.x + 0.08, light.pos.y + offsetY);
+		glVertex2f(light.pos.x + 0.24, light.pos.y + offsetY);
+		glVertex2f(light.pos.x + 0.32, light.pos.y);
+	glEnd();
+
+	if(light.raysVisible) {
+		drawRays(light);
+	}
+
+	//glColor3f(0, 0, 0);
+	//drawText(light.pos + Vec2(0.115, 0.025), "Spot Light");
+}
+
+void drawLights() {
+	for(auto light : lights) {
+		drawLight(light);
+	}
 }
 
 void render() {
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	// Level
-	drawLight(Vec(0, 0.85));
+	drawLights();
 
 	// Player
-	drawRect(player.getPos(), player.body);
+	drawRect(player.pos, player.body);
 
 	// Debug
+	calculateFPS();
 	drawFPS();
 
-	if(debugRays) {
-		drawRays();
-	}
-	else {
-		glColor3f(0.6, 0.6, 0);
-		drawText(Vec(DEBUG_INFOX, 0.87), "DebugRays Off");
-	}
+	//if(debugRays) {
+	//	drawRays();
+	//}
+	//else {
+	//	glColor3f(0.6, 0.6, 0);
+	//	drawText(Vec2(DEBUG_INFOX, 0.87), "DebugRays Off");
+	//}
 
 	glFlush();
 }
 #pragma endregion Render
 
-//void gameLoop() {
-//	update();
-//	render();
-//}
 
 int main(int argc, char* argv[]) {
 	player = Player(0, 0, 0.2, 0.2);
 
+	Vec3 warmFlourescent = Vec3(1, 0.95686, 0.89804);		// http://planetpixelemporium.com/tutorialpages/light.html
+	lights.push_back(Light(0, 0.85, LightType::FLOURESCENT, warmFlourescent, true));
 
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_SINGLE);
 	glutInitWindowSize(720, 720);		// 1280 x 720
 	glutInitWindowPosition(320, 180);
 	glutCreateWindow("FlappyRay Engine Demo");
+	
+
+	//glutGameModeString("1280x720:16@60");		// 16 bits per pixel
+	//glutEnterGameMode();
+
+
 	glutDisplayFunc(render);
 	glutIdleFunc(update);
+
+	//glutTimerFunc(32, update, -1);
 
 	glutKeyboardFunc(keyboard);
 	//glutSpecialFunc(keyboard);
