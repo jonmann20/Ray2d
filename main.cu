@@ -1,10 +1,13 @@
-// OpenGL
+// OpenGL, OpenGl Utitliy Toolkit (GLUT)
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 
 // CUDA
 #include <cuda_runtime.h>
 #include <cuda_gl_interop.h>
+
+// Box2d
+//#include <Box2D/Box2D.h>
 
 // FlappyRay helpers
 #include "utils.h"			// includes: iostream, namespace std
