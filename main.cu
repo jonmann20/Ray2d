@@ -7,7 +7,7 @@
 #include <cuda_gl_interop.h>
 
 // Box2d
-//#include <Box2D/Box2D.h>
+#include <Box2D/Box2D.h>
 
 // FlappyRay helpers
 #include "utils.h"			// includes: iostream, namespace std
