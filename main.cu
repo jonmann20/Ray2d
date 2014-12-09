@@ -8,13 +8,19 @@
 
 // FlappyRay helpers
 #include "utils.h"			// includes: iostream, namespace std
-#include "globals.h"		// includes: vec, player
-#include "rect.h"			// includes: vec
-#include "circle.h"			// includes: vec
+#include "globals.h"		// includes: vec2, player, light
+#include "rect.h"			// includes: vec2
+#include "circle.h"			// includes: vec2
+#include "line.h"			// includes: vec2
 
 // OpenGL globals
 GLvoid* font_style = GLUT_BITMAP_HELVETICA_12;
 
+struct CollisionResponse {
+	Vec2 overlapN, overlapV;
+};
+
+Line line = Line(0, 0.85, 0, -1);
 
 #pragma region CUDA
 __global__
@@ -43,31 +49,102 @@ void testCuda() {
 #pragma endregion CUDA
 
 #pragma region Update
-void keyboard(unsigned char key, int x, int y) {
+void keydown(unsigned char key, int x, int y) {
 	//printV(key);
 
-	const float dt = 0.08;
+	keysDown[key] = true;
+}
 
-	switch(key) {
-		case 'w':
-			player.pos.y += dt;
-			break;
-		case 'a':
-			player.pos.x -= dt;
-			break;
-		case 's':
-			player.pos.y -= dt;
-			break;
-		case 'd':
-			player.pos.x += dt;
-			break;
-		case 32:			// spacebar
-			debugRays = !debugRays;
-			break;
-		case 27:			// escape
-			exit(0);
-			break;
+void keyup(unsigned char key, int x, int y) {
+	keysDown[key] = false;
+}
+
+void checkInput() {
+	const float dt = 0.08 / 100;
+
+	if(keysDown['w']) {
+		player.pos.y += dt;
 	}
+	if(keysDown['a']) {
+		player.pos.x -= dt;
+	}
+	if(keysDown['s']) {
+		player.pos.y -= dt;
+	}
+	if(keysDown['d']) {
+		player.pos.x += dt;
+	}
+	if(keysDown[32]) {			// spacebar
+		debugRays = !debugRays;
+	}
+	if(keysDown[27]) {			// escape
+		exit(0);
+	}
+
+	glutPostRedisplay();
+}
+
+CollisionResponse testLineRect(Line a, Rect b) {
+	CollisionResponse r;
+	r.overlapV = Vec2(0, 0);
+
+	float x2 = b.pos.x + b.size.x;
+	float y2 = b.pos.y + b.size.y;
+
+	if(x2 < a.start.x) {			// player is not intersecting line.
+		r.overlapV = Vec2(0, 0);
+	}
+
+	if(b.pos.x > a.end.x) {			// player is not intersecting line.
+		r.overlapV = Vec2(0, 0);
+	}
+	
+	cout << y2 << " < " << a.start.y << " && " << b.pos.y << " > " << a.start.y << endl;
+
+	if(y2 < a.start.y && b.pos.y > a.start.y) {		// bottom of player is below line 0, and player is intersecting line
+		r.overlapV = Vec2(0, a.start.y - y2);
+	}
+
+	return r;
+}
+
+void checkRayCollision() {
+	for(const auto& light : lights) {
+		for(auto& chunk : player.body) {
+		//auto chunk = player.body.back();
+		
+			float x = player.pos.x + chunk.pos.x;
+			float y = player.pos.y + chunk.pos.y;
+		
+			//cout << x << " <= " << light.pos.x << " && " << (x + chunk.size.x) << " >= " << light.pos.x << endl;
+
+			CollisionResponse response = testLineRect(line, Rect(x, y, chunk.size.x, chunk.size.y, chunk.color));
+
+			if(response.overlapV.y != 0) {
+				chunk.color = Vec3(1, 1, 1);
+			}
+			else {
+				chunk.color = chunk.INIT_COLOR;
+			}
+
+			//if((x <= light.pos.x) &&
+			//   ((x + chunk.size.x) >= light.pos.x)
+			//){
+			//	//cout << "new color" << endl;
+			//	chunk.color = Vec3(1, 1, 1);
+			//}
+			//else {
+			//	//cout << "init color" << endl;
+			//	chunk.color = chunk.INIT_COLOR;
+			//}
+		}
+	}
+}
+
+void update() {
+	checkInput();
+	checkRayCollision();
+
 	glutPostRedisplay();
 }
 
@@ -92,39 +169,6 @@ void calculateFPS() {
 		frameCount = 0;
 	}
 }
-
-
-void checkRayCollision() {
-	for(const auto& light : lights) {
-		
-		for(auto& chunk : player.body) {
-		//auto chunk = player.body.back();
-		
-			float x = player.pos.x + chunk.pos.x;
-			//float y = player.pos.y + chunk.pos.y;
-		
-			//cout << x << " <= " << light.pos.x << " && " << (x + chunk.size.x) << " >= " << light.pos.x << endl;
-
-			if((x <= light.pos.x) &&
-			   ((x + chunk.size.x) >= light.pos.x)
-			){
-				//cout << "new color" << endl;
-				chunk.color = Vec3(1, 1, 1);
-			}
-			else {
-				//cout << "init color" << endl;
-				chunk.color = chunk.INIT_COLOR;
-			}
-		}
-	}
-}
-
-void update() {
-	checkRayCollision();
-
-	glutPostRedisplay();
-}
-
 #pragma endregion Update
 
 #pragma region Render
@@ -201,8 +245,10 @@ void drawRays(Light light) {
 
 	glColor3f(0.8, 0, 0);
 	glBegin(GL_LINES);
-	glVertex2f(light.pos.x, light.pos.y);
-	glVertex2f(light.pos.x, light.pos.y - (2 - (1 - light.pos.y)));
+		glVertex2f(line.start.x, line.start.y);
+		glVertex2f(line.end.x, line.end.y);
+		//glVertex2f(light.pos.x, light.pos.y);
+		//glVertex2f(light.pos.x, light.pos.y - (2 - (1 - light.pos.y)));
 	glEnd();
 }
 
@@ -269,6 +315,7 @@ int main(int argc, char* argv[]) {
 	glutInitWindowPosition(320, 180);
 	glutCreateWindow("FlappyRay Engine Demo");
 	
+	glutIgnoreKeyRepeat(1);
 
 	//glutGameModeString("1280x720:16@60");		// 16 bits per pixel
 	//glutEnterGameMode();
@@ -279,7 +326,8 @@ int main(int argc, char* argv[]) {
 
 	//glutTimerFunc(32, update, -1);
 
-	glutKeyboardFunc(keyboard);
+	glutKeyboardFunc(keydown);
+	glutKeyboardUpFunc(keyup);
 	//glutSpecialFunc(keyboard);
 
 	glutMainLoop();

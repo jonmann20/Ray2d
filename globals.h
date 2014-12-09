@@ -11,6 +11,9 @@ Player player;
 // Game Objects
 vector<Light> lights;
 
+// Game Engine components
+bool keysDown[256];
+
 // fps
 int frameCount = 0;
 float fps = 0;

@@ -130,6 +130,7 @@
     <ClInclude Include="circle.h" />
     <ClInclude Include="globals.h" />
     <ClInclude Include="light.h" />
+    <ClInclude Include="line.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="rect.h" />
     <ClInclude Include="utils.h" />

@@ -10,12 +10,9 @@ public:
 
 	Circle() {}
 
-	Circle(float x, float y, float radius) {
-		pos.x = x;
-		pos.y = y;
-
-		r = radius;
-	}
+	Circle(float x, float y, float radius)
+		: pos(Vec2(x, y)), r(radius)
+	{}
 };
 
 #endif // CIRCLE_H

@@ -14,10 +14,9 @@ public:
 
 	Light() {}
 
-	Light(float x, float y, LightType type, Vec3 color, bool raysVisible = false) : type(type), color(color), raysVisible(raysVisible) {
-		pos.x = x;
-		pos.y = y;
-	}
+	Light(float x, float y, LightType type, Vec3 color, bool raysVisible = false)
+		: pos(Vec2(x, y)), type(type), color(color), raysVisible(raysVisible)
+	{}
 };
 
 #endif // LIGHT_H
