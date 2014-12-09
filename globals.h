@@ -4,6 +4,7 @@
 #include "vec.h"
 #include "player.h"
 #include "light.h"
+#include "input.h"
 
 // player
 Player player;
@@ -12,7 +13,6 @@ Player player;
 vector<Light> lights;
 
 // Game Engine components
-bool keysDown[256];
 
 // fps
 int frameCount = 0;

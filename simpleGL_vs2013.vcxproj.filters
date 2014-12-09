@@ -2,6 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <CudaCompile Include="main.cu" />
+    <CudaCompile Include="references.cu" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="globals.h" />
@@ -20,6 +21,7 @@
     <ClInclude Include="line.h">
       <Filter>geometry</Filter>
     </ClInclude>
+    <ClInclude Include="input.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="readme.md" />
