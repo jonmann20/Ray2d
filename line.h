@@ -4,14 +4,17 @@
 #include "vec.h"
 #include "references.cu"
 
+enum LineType{TOP, RIGHT, BOT, LEFT, NONE};
+
 class Line {
 public:
 	Vec2 start, end;
+	LineType type;
 
 	Line() {}
 
-	Line(float x1, float y1, float x2, float y2)
-		: start(Vec2(x1, y1)), end(Vec2(x2, y2))
+	Line(float x1, float y1, float x2, float y2, LineType type = LineType::NONE)
+		: start(Vec2(x1, y1)), end(Vec2(x2, y2)), type(type)
 	{}
 
 	void draw() const {

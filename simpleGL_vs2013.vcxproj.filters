@@ -23,6 +23,7 @@
     </ClInclude>
     <ClInclude Include="input.h" />
     <ClInclude Include="collision.h" />
+    <ClInclude Include="chunk.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="readme.md" />

@@ -4,6 +4,7 @@
 #include "references.cu"
 #include <vector>
 #include "rect.h"
+#include "chunk.h"
 #include "input.h"
 
 /*
@@ -12,41 +13,37 @@
 class Player {
 public:
 	Vec2 pos;
-	vector<Rect> body;		// relative to pos
+	vector<Chunk> body;		// relative to pos
 	
 	Player() {}
 
 	Player(float x, float y, float w, float h) {
 		pos = Vec2(x, y);
-		body.push_back(Rect(0, 0, w/2, h/2, Vec3(1, 0, 0)));		// top left; red
-		body.push_back(Rect(w/2, 0, w/2, h/2, Vec3(0, 1, 0)));		// top right; green
-		body.push_back(Rect(w/2, -h/2, w/2, h/2, Vec3(0, 0, 1)));		// bot right; blue
-		body.push_back(Rect(0, -h/2, w/2, h/2, Vec3(1, 1, 0.5)));		// bot left; yellow
+		body.push_back(Chunk(0, 0, w / 2, h / 2, Vec3(1, 0, 0), TOP_LEFT));				// red
+		body.push_back(Chunk(w / 2, 0, w / 2, h / 2, Vec3(0, 1, 0), TOP_RIGHT));		// green
+		body.push_back(Chunk(w / 2, -h / 2, w / 2, h / 2, Vec3(0, 0, 1), BOT_RIGHT));	// blue
+		body.push_back(Chunk(0, -h / 2, w / 2, h / 2, Vec3(1, 1, 0.5), BOT_LEFT));		// yellow
 	}
 
 	// Draws a rectangle in chunks
 	void draw() {
 		for(auto part : body) {
-			float x = pos.x + part.pos.x;
-			float y = pos.y + part.pos.y;
+			float x = pos.x + part.rect.pos.x;
+			float y = pos.y + part.rect.pos.y;
 
 			glColor3f(part.color.x, part.color.y, part.color.z);
 
 			glBegin(GL_POLYGON);
 			glVertex2f(x, y);
-			glVertex2f(x + part.size.x, y);
-			glVertex2f(x + part.size.x, y + part.size.y);
-			glVertex2f(x, y + part.size.y);
+			glVertex2f(x + part.rect.size.x, y);
+			glVertex2f(x + part.rect.size.x, y - part.rect.size.y);
+			glVertex2f(x, y - part.rect.size.y);
 			glEnd();
 		}
-
-
-		//glColor3f(0, 0, 0);
-		//drawText(pos + Vec2(-0.025, -0.01), "Player");
 	}
 
 	void updatePos() {
-		const float dt = 0.006;
+		const float dt = 0.004;
 
 		if(keysDown['w']) {
 			pos.y += dt;

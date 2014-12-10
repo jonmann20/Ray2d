@@ -11,8 +11,8 @@ public:
 
 	Rect() {}
 
-	Rect(float x, float y, float w, float h, Vec3 color)
-		: pos(Vec2(x, y)), size(Vec2(w, h)), INIT_COLOR(color), color(color)
+	Rect(float x, float y, float w, float h)
+		: pos(Vec2(x, y)), size(Vec2(w, h))
 	{}
 };
 
