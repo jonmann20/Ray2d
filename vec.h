@@ -16,6 +16,8 @@ public:
 		: x(x), y(y)
 	{}
 
+	static const Vec2 ZERO;
+
 	Vec2 operator+(const Vec2& other) {
 		return Vec2(x + other.x, y + other.y);
 	}
@@ -41,10 +43,17 @@ public:
 		return (abs(x - other.x) < 0.001) && (abs(y - other.y) < 0.001);
 	}
 
+	bool operator!=(const Vec2& other) {
+		return (abs(x - other.x) > 0.001) || (abs(y - other.y) > 0.001);
+	}
+
 	float length() {
 		return sqrt(x*x + y*y);
 	}
 };
+
+const Vec2 Vec2::ZERO = Vec2(0, 0);
+
 
 /*
 * A 3D Vector

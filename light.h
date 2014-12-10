@@ -15,6 +15,7 @@ public:
 	LightType type;
 	bool raysVisible;
 	vector<Line> rays;
+	vector<Line> raySegments;
 
 	Light() {}
 
@@ -26,49 +27,60 @@ public:
 	}
 
 	void checkRays() {
-		vector<Line> newRays;
-		
 		// reset player color
 		for(auto& i : player.body) {
 			i.color = i.INIT_COLOR;
 		}
 
+		// reset raySegments
+		raySegments.clear();
+
 		for(const auto& ray : rays) {
-			for(auto& chunk : player.body) {
-				float x = player.pos.x + chunk.pos.x;
-				float y = player.pos.y + chunk.pos.y;
-				float x2 = x + chunk.size.x;
-				float y2 = y + chunk.size.y;
+			checkRay(ray);
+		}
+	}
 
-				Line chunkLines[4] = {
-					Line(x, y, x2, y),
-					Line(x2, y, x2, y2),
-					Line(x2, y2, x, y2),
-					Line(x, y2, x, y)
-				};
+	void checkRay(Line ray) {
+		Line raySegment = ray;
 
-				for(int i=0; i < 4; ++i) {
-					if(testLineLine(ray, chunkLines[i])) {
-						// TODO: only push once?
-						// spawn new ray
-						newRays.push_back(Line(
-							chunkLines[i].midPt().x,
-							chunkLines[i].midPt().y,
-							ray.end.x - ray.start.x,
-							ray.start.y - ray.end.y
-						));
+		for(auto& chunk : player.body) {
+			float x = player.pos.x + chunk.pos.x;
+			float y = player.pos.y + chunk.pos.y;
+			float x2 = x + chunk.size.x;
+			float y2 = y + chunk.size.y;
 
-						chunk.color = Vec3(1, 1, 1);
-						break;
-					}
+			Line chunkLines[4] = {
+				Line(x, y, x2, y),
+				Line(x2, y, x2, y2),
+				Line(x2, y2, x, y2),
+				Line(x, y2, x, y)
+			};
+
+			CollisionResponse cr;
+			for(int i = 0; i < 4; ++i) {
+				CollisionResponse cr = testLineLine(ray, chunkLines[i]);
+
+				if(cr.wasCollision) {
+					chunk.color = Vec3(1, 1, 1);
+
+					raySegment.end = cr.intersectionPt;
+
+					// spawn ray reflection
+					Line newRay = Line(
+						cr.intersectionPt.x,
+						cr.intersectionPt.y,
+						(ray.end.x - ray.start.x) * 2,
+						ray.start.y - ray.end.y
+					);
+					//checkRay(newRay);
+					
+					raySegments.push_back(raySegment);
+					return;
 				}
 			}
 		}
 
-		for(const auto& i : newRays) {
-			rays.push_back(i);
-		}
-		newRays.clear();
+		raySegments.push_back(raySegment);
 	}
 
 	void draw() {
@@ -83,13 +95,9 @@ public:
 		glEnd();
 
 		if(raysVisible) {
-			drawRays();
-		}
-	}
-
-	void drawRays() {
-		for(const auto& ray : rays) {
-			ray.draw();
+			for(const auto& i : raySegments) {
+				i.draw();
+			}
 		}
 	}
 };
