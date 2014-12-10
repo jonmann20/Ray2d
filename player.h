@@ -1,9 +1,9 @@
 #ifndef PLAYER_H_
 #define PLAYER_H_
 
+#include "references.cu"
 #include <vector>
 #include "rect.h"
-#include "references.cu"
 #include "input.h"
 
 /*
@@ -46,7 +46,7 @@ public:
 	}
 
 	void updatePos() {
-		const float dt = 0.04;
+		const float dt = 0.006;
 
 		if(keysDown['w']) {
 			pos.y += dt;
@@ -69,6 +69,6 @@ public:
 
 		glutPostRedisplay();
 	}
-};
+} player;
 
 #endif // PLAYER_H

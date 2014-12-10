@@ -1,18 +1,17 @@
 #ifndef GLOBALS_H_
 #define GLOBALS_H_
 
-#include "vec.h"
-#include "player.h"
 #include "light.h"
-#include "input.h"
 
-// player
-Player player;
+#include <vector>
+
+using namespace std;
 
 // Game Objects
 vector<Light> lights;
 
 // Game Engine components
+
 
 // fps
 int frameCount = 0;

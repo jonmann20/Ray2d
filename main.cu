@@ -6,23 +6,18 @@
 #include <cuda_runtime.h>
 #include <cuda_gl_interop.h>
 
-// Box2d
-#include <Box2D/Box2D.h>
-
 // FlappyRay helpers
 #include "utils.h"			// includes: iostream, namespace std
-#include "globals.h"		// includes: vec2, player, light
+#include "globals.h"		// includes: light
 #include "rect.h"			// includes: vec2
 #include "circle.h"			// includes: vec2
 #include "line.h"			// includes: vec2
 #include "input.h"
+#include "collision.h"
+#include "player.h"
 
 // OpenGL globals
 GLvoid* font_style = GLUT_BITMAP_HELVETICA_12;
-
-struct CollisionResponse {
-	Vec2 overlapN, overlapV;
-};
 
 #pragma region CUDA
 __global__
@@ -51,61 +46,9 @@ void testCuda() {
 #pragma endregion CUDA
 
 #pragma region Update
-
-CollisionResponse testLineRect(Line a, Rect b) {
-	CollisionResponse r;
-	r.overlapV = Vec2(0, 0);
-
-	float x2 = b.pos.x + b.size.x;
-	float y2 = b.pos.y + b.size.y;
-
-	if(x2 < a.start.x) {			// player is not intersecting line.
-		r.overlapV = Vec2(0, 0);
-	}
-
-	if(b.pos.x > a.end.x) {			// player is not intersecting line.
-		r.overlapV = Vec2(0, 0);
-	}
-	
-	//cout << y2 << " < " << a.start.y << " && " << b.pos.y << " > " << a.start.y << endl;
-
-	if(y2 < a.start.y && b.pos.y > a.start.y) {		// bottom of player is below line 0, and player is intersecting line
-		r.overlapV = Vec2(0, a.start.y - y2);
-	}
-
-	return r;
-}
-
 void checkRayCollision() {
-	for(const auto& light : lights) {
-		for(auto& chunk : player.body) {
-		//auto chunk = player.body.back();
-		
-			float x = player.pos.x + chunk.pos.x;
-			float y = player.pos.y + chunk.pos.y;
-		
-			//cout << x << " <= " << light.pos.x << " && " << (x + chunk.size.x) << " >= " << light.pos.x << endl;
-
-			CollisionResponse response = testLineRect(light.rays.back(), Rect(x, y, chunk.size.x, chunk.size.y, chunk.color));
-
-			if(response.overlapV.y != 0) {
-				chunk.color = Vec3(1, 1, 1);
-			}
-			else {
-				chunk.color = chunk.INIT_COLOR;
-			}
-
-			//if((x <= light.pos.x) &&
-			//   ((x + chunk.size.x) >= light.pos.x)
-			//){
-			//	//cout << "new color" << endl;
-			//	chunk.color = Vec3(1, 1, 1);
-			//}
-			//else {
-			//	//cout << "init color" << endl;
-			//	chunk.color = chunk.INIT_COLOR;
-			//}
-		}
+	for(auto& light : lights) {
+		light.checkRays();
 	}
 }
 
@@ -214,11 +157,6 @@ int main(int argc, char* argv[]) {
 
 	Vec3 warmFlourescent = Vec3(1, 0.95686, 0.89804);		// http://planetpixelemporium.com/tutorialpages/light.html
 	lights.push_back(Light(0, 0.85, LightType::FLOURESCENT, warmFlourescent, true));
-
-
-	//----- Box2D setup
-	b2Vec2 gravity(0.f, -10.f);
-	//b2World world(gravity);
 
 
 	//----- OpenGL setup

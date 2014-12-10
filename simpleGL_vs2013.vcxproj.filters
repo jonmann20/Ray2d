@@ -22,6 +22,7 @@
       <Filter>geometry</Filter>
     </ClInclude>
     <ClInclude Include="input.h" />
+    <ClInclude Include="collision.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="readme.md" />

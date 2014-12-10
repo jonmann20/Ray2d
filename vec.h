@@ -34,7 +34,11 @@ public:
 	}
 
 	float cross(const Vec2& other) {
-		return 0;		// z dimension always 0?
+		return x * other.y - y * other.x;
+	}
+
+	bool operator==(const Vec2& other) {
+		return (abs(x - other.x) < 0.001) && (abs(y - other.y) < 0.001);
 	}
 
 	float length() {
