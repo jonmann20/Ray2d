@@ -153,7 +153,7 @@ void render() {
 
 int main(int argc, char* argv[]) {
 	//----- Game Setup
-	player = Player(0, 0, 0.2, 0.2);
+	player = Player(-0.05, 0, 0.25, 0.25);
 
 	Vec3 warmFlourescent = Vec3(1, 0.95686, 0.89804);		// http://planetpixelemporium.com/tutorialpages/light.html
 	lights.push_back(Light(0, 0.85, LightType::FLOURESCENT, warmFlourescent, true));
@@ -163,7 +163,7 @@ int main(int argc, char* argv[]) {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
 	glutInitWindowSize(720, 720);		// 1280 x 720
-	glutInitWindowPosition(320, 180);
+	glutInitWindowPosition(800, 160);
 	glutCreateWindow("FlappyRay Engine Demo");
 
 	//glutGameModeString("1280x720:16@60");		// 16 bits per pixel
