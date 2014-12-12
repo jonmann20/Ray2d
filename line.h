@@ -1,8 +1,9 @@
 #ifndef LINE_H_
 #define LINE_H_
 
-#include "vec.h"
 #include "references.cu"
+#include "utils.h"
+#include "vec.h"
 
 class Line {
 public:

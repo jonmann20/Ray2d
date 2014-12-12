@@ -9,7 +9,6 @@ TODO
 3. non-rect objects
 4. Bounce rays off screen "walls"
 5. Rotatable light, dynamicly initial created rays
-6. 
 
 
 OpenGL Notes

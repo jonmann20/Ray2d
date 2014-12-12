@@ -131,7 +131,7 @@
     <ClInclude Include="chunk.h" />
     <ClInclude Include="circle.h" />
     <ClInclude Include="collision.h" />
-    <ClInclude Include="globals.h" />
+    <ClInclude Include="game.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="light.h" />
     <ClInclude Include="line.h" />
@@ -139,6 +139,10 @@
     <ClInclude Include="rect.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="vec.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="game.cpp" />
+    <ClCompile Include="light.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

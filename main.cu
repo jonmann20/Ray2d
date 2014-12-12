@@ -7,17 +7,19 @@
 #include <cuda_gl_interop.h>
 
 // FlappyRay helpers
-#include "utils.h"			// includes: iostream, namespace std
-#include "globals.h"		// includes: light
-#include "rect.h"			// includes: vec2
-#include "circle.h"			// includes: vec2
-#include "line.h"			// includes: vec2
-#include "input.h"
-#include "collision.h"
-#include "player.h"
+#include "game.h"
+#include "light.h"
+//#include "utils.h"
+//#include "rect.h"
+//#include "circle.h"
+//#include "line.h"
+//#include "input.h"
+//#include "collision.h"
+//#include "player.h"
 
-// OpenGL globals
-GLvoid* font_style = GLUT_BITMAP_HELVETICA_12;
+
+#include <iostream>
+using namespace std;
 
 #pragma region CUDA
 __global__
@@ -47,82 +49,34 @@ void testCuda() {
 
 #pragma region Update
 void checkRayCollision() {
-	for(auto& light : lights) {
+	/*for(Light light : game.lights) {
 		light.checkRays();
-	}
+	}*/
 }
 
 void update() {
-	player.updatePos();
+	//player.updatePos();
 	checkRayCollision();
 
 	glutPostRedisplay();
 }
 
-void calculateFPS() {
-	++frameCount;
 
-	// Get the number of milliseconds since glutInit called 
-	// (or first call to glutGet(GLUT ELAPSED TIME)).
-	currentTime = glutGet(GLUT_ELAPSED_TIME);
-
-	// Calculate time passed
-	int timeInterval = currentTime - previousTime;
-
-	if(timeInterval > 1000) {
-		// calculate the number of frames per second
-		fps = frameCount / (timeInterval / 1000.0f);
-
-		// Set time
-		previousTime = currentTime;
-
-		// Reset frame count
-		frameCount = 0;
-	}
-}
 #pragma endregion Update
 
 #pragma region Render
-void drawText(Vec2 pos, char* format, ...) {
-	// Initialize a variable argument list
-	va_list args;
-	va_start(args, format);
 
-	// Return the number of characters in the string referenced the list of arguments.
-	// _vscprintf doesn't count terminating '\0' (that's why +1)
-	int len = _vscprintf(format, args) + 1;
-
-	// Allocate memory for a string of the specified size
-	char* text = (char*)malloc(len * sizeof(char));
-
-	// Write formatted output using a pointer to the list of arguments
-	vsprintf_s(text, len, format, args);
-
-	// End using variable argument list 
-	va_end(args);
-
-	// Specify the raster position for pixel operations
-	glRasterPos2f(pos.x, pos.y);
-
-	for(int i=0; text[i] != '\0'; ++i) {
-		glutBitmapCharacter(font_style, text[i]);
-	}
-
-	free(text);
-}
-
-void drawFPS() {
-	//  Load the identity matrix so that FPS string being drawn won't get animates
-	glLoadIdentity();
-
-	glColor3f(0.6, 0.6, 0);
-	drawText(Vec2(DEBUG_INFOX, 0.92), "FPS: %4.2f", fps);
-}
 
 void drawLights() {
-	for(auto light : lights) {
+	/*for(auto light : game.lights) {
 		light.draw();
-	}
+	}*/
+
+	glColor3f(0.8, 0, 0);
+	glBegin(GL_LINES);
+	glVertex2f(0, 0);
+	glVertex2f(-1, 1);
+	glEnd();
 }
 
 void render() {
@@ -132,18 +86,18 @@ void render() {
 	drawLights();
 
 	// Player
-	player.draw();
+	//player.draw();
 
 	// Debug
-	calculateFPS();
-	drawFPS();
+	//game.calculateFPS();
+	//game.drawFPS();
 
-	//if(debugRays) {
+	//if(game.debugRays) {
 	//	drawRays();
 	//}
 	//else {
 	//	glColor3f(0.6, 0.6, 0);
-	//	drawText(Vec2(DEBUG_INFOX, 0.87), "DebugRays Off");
+	//	drawText(Vec2(game.DEBUG_INFOX, 0.87), "DebugRays Off");
 	//}
 
 	glutSwapBuffers();
@@ -153,30 +107,23 @@ void render() {
 
 int main(int argc, char* argv[]) {
 	//----- Game Setup
-	player = Player(-0.05, 0, 0.25, 0.25);
-
-	Vec3 warmFlourescent = Vec3(1, 0.95686, 0.89804);		// http://planetpixelemporium.com/tutorialpages/light.html
-	lights.push_back(Light(0, 0.85, LightType::FLOURESCENT, warmFlourescent, true));
-
+	//player = Player(0.1, 0, 0.25, 0.25);
 
 	//----- OpenGL setup
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
-	glutInitWindowSize(720, 720);		// 1280 x 720
-	glutInitWindowPosition(800, 160);
+	glutInitWindowSize(game.FULLW, game.FULLH);
+	glutInitWindowPosition(850, 160);
 	glutCreateWindow("FlappyRay Engine Demo");
-
-	//glutGameModeString("1280x720:16@60");		// 16 bits per pixel
-	//glutEnterGameMode();
 
 	glutDisplayFunc(render);
 	glutIdleFunc(update);
 	//glutTimerFunc(32, update, -1);
 
 	glutIgnoreKeyRepeat(1);
-	glutKeyboardFunc(keydown);
-	glutKeyboardUpFunc(keyup);
-	//glutSpecialFunc(keyboard);
+	//glutKeyboardFunc(keydown);
+	//glutKeyboardUpFunc(keyup);
+	
 
 	glutMainLoop();
 

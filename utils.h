@@ -1,12 +1,15 @@
 #ifndef UTILS_H_
 #define UTILS_H_
 
+#include "game.h"
+#include "vec.h"
+
 #include <iostream>
 using namespace std;
 
 #define PI 3.1415926535897932384626433832795
 #define printV(v) cout << #v << ": " << v << endl
-
+#define printV2(a, b) cout << #a << ", " << #b << ": " << a << ", " << b << endl
 
 enum DirType {TOP, RIGHT, BOT, LEFT, NONE};
 char* DirTypes[] = {"TOP", "RIGHT", "BOT", "LEFT", "NONE"};

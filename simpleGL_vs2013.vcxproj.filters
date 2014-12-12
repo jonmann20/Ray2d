@@ -5,7 +5,6 @@
     <CudaCompile Include="references.cu" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="globals.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="vec.h">
       <Filter>geometry</Filter>
@@ -17,13 +16,18 @@
       <Filter>geometry</Filter>
     </ClInclude>
     <ClInclude Include="player.h" />
-    <ClInclude Include="light.h" />
     <ClInclude Include="line.h">
       <Filter>geometry</Filter>
     </ClInclude>
     <ClInclude Include="input.h" />
     <ClInclude Include="collision.h" />
     <ClInclude Include="chunk.h" />
+    <ClInclude Include="game.h">
+      <Filter>hdr</Filter>
+    </ClInclude>
+    <ClInclude Include="light.h">
+      <Filter>hdr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="readme.md" />
@@ -32,5 +36,19 @@
     <Filter Include="geometry">
       <UniqueIdentifier>{56960142-b9a2-4b91-9604-17943584c727}</UniqueIdentifier>
     </Filter>
+    <Filter Include="hdr">
+      <UniqueIdentifier>{99382b20-2b85-4a5c-b6f1-209bab5b10b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{8a9f7197-f84f-40d0-ba2f-58e2fbc124e2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="game.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="light.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

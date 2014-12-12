@@ -3,6 +3,7 @@
 
 #include "references.cu"
 #include <vector>
+#include <queue>
 #include <iostream>
 #include <iomanip>
 
@@ -70,9 +71,9 @@ public:
 		: pos(Vec2(x, y))
 	{
 		DT = 0.0015;
-		CHUNKS = pow(14, 2);
+		CHUNKS = pow(25, 2);
 		CHUNKS_PER_AXIS = sqrt(CHUNKS);
-		COLOR_INTENSITY_FALLOFF = 0.05;
+		COLOR_INTENSITY_FALLOFF = 1.1;
 
 		// Initialize body chunks
 		Vec3 color(0.1, 0.1, 0.1);
@@ -124,7 +125,7 @@ public:
 			pos.x += DT;
 		}
 		//if(input.keysDown[32]) {			// spacebar
-		//	debugRays = !debugRays;
+		//	game.debugRays = !game.debugRays;
 		//}
 		if(keysDown[27]) {			// escape
 			exit(0);
@@ -133,164 +134,59 @@ public:
 		glutPostRedisplay();
 	}
 
-	// recurses through chunks
-	void updateChunkColor(const int& chunkNum, DirType fromSide, const float& colorIntensity, const int& numPasses) {
-		if(colorIntensity - COLOR_INTENSITY_FALLOFF <= 0) {
-			return;
-		}
-		
-		// update self
-		body[chunkNum].color.add(colorIntensity);
+	void updateChunkColors(const int& chunkNum, float initIntensity) {		// TODO: color blending, not just intensity
+		vector<bool> setChunks(body.size(), 0);	// seperate for each ray
+		queue<pair<int, float>> q({make_pair(chunkNum, initIntensity)});
 
-		// update surrounding chunks
-		// recurse on surrounding chunks
-		vector<DirType> passedFrom;
-		
-		switch(body[chunkNum].type) {
-			case ChunkType::TOP_LEFT:
-				switch(fromSide) {
-					case DirType::RIGHT:
-						passedFrom.push_back(DirType::TOP);		// pass down a square
-						break;
-					case DirType::BOT:
-						passedFrom.push_back(DirType::LEFT);	// pass right a square
-						break;
-					default:
-						passedFrom.push_back(DirType::TOP);
-						passedFrom.push_back(DirType::LEFT);
-						break;
-				}
-				break;
-			case ChunkType::TOP_MID:
-				switch(fromSide) {
-					case DirType::LEFT:
-						passedFrom.push_back(DirType::LEFT);
-						passedFrom.push_back(DirType::TOP);
-						break;
-					case DirType::RIGHT:
-						passedFrom.push_back(DirType::RIGHT);
-						passedFrom.push_back(DirType::TOP);
-						break;
-					case DirType::BOT:
-						passedFrom.push_back(DirType::LEFT);
-						passedFrom.push_back(DirType::RIGHT);
-						break;
-					default:
-						passedFrom.push_back(DirType::LEFT);
-						passedFrom.push_back(DirType::RIGHT);
-						passedFrom.push_back(DirType::TOP);
-						break;
-				}
-				break;
-			case ChunkType::TOP_RIGHT:
-				switch(fromSide) {
-					case DirType::LEFT:
-						passedFrom.push_back(DirType::TOP);
-						break;
-					case DirType::BOT:
-						passedFrom.push_back(DirType::RIGHT);
-						break;
-					default:
-						passedFrom.push_back(DirType::RIGHT);
-						passedFrom.push_back(DirType::TOP);
-						break;
-				}
-				break;
-			case ChunkType::MID_LEFT:
-				switch(fromSide) {
-					case DirType::TOP:
-						passedFrom.push_back(DirType::LEFT);
-						passedFrom.push_back(DirType::TOP);
-						break;
-					case DirType::RIGHT:
-						passedFrom.push_back(DirType::TOP);
-						passedFrom.push_back(DirType::BOT);
-						break;
-					case DirType::BOT:
-						passedFrom.push_back(DirType::BOT);
-						passedFrom.push_back(DirType::LEFT);
-						break;
-					default:
-						passedFrom.push_back(DirType::TOP);
-						passedFrom.push_back(DirType::BOT);
-						passedFrom.push_back(DirType::LEFT);
-						break;
-				}
-				break;
-			case ChunkType::MID:
-				switch(fromSide) {
-					case DirType::TOP:
-						passedFrom.push_back(DirType::TOP);
-						passedFrom.push_back(DirType::RIGHT);
-						passedFrom.push_back(DirType::LEFT);
-						break;
-					case DirType::RIGHT:
-						passedFrom.push_back(DirType::BOT);
-						passedFrom.push_back(DirType::TOP);
-						passedFrom.push_back(DirType::RIGHT);
-						break;
-					case DirType::BOT:
-						passedFrom.push_back(DirType::BOT);
-						passedFrom.push_back(DirType::RIGHT);
-						passedFrom.push_back(DirType::LEFT);
-						break;
-					case DirType::LEFT:
-						passedFrom.push_back(DirType::BOT);
-						passedFrom.push_back(DirType::TOP);
-						passedFrom.push_back(DirType::LEFT);
-						break;
-					default: // should never happen
-						passedFrom.push_back(DirType::TOP);
-						passedFrom.push_back(DirType::RIGHT);
-						passedFrom.push_back(DirType::BOT);
-						passedFrom.push_back(DirType::LEFT);
-						break;
-				}
-				break;
-			case ChunkType::MID_RIGHT:
-				if(fromSide != DirType::TOP)	passedFrom.push_back(DirType::TOP);
-				if(fromSide != DirType::RIGHT)	passedFrom.push_back(DirType::RIGHT);
-				if(fromSide != DirType::BOT)	passedFrom.push_back(DirType::BOT);
-				break;
-			case ChunkType::BOT_LEFT:
-				passedFrom.push_back(DirType::BOT);
-				passedFrom.push_back(DirType::LEFT);
-				break;
-			case ChunkType::BOT_MID:
-				passedFrom.push_back(DirType::LEFT);
-				passedFrom.push_back(DirType::BOT);
-				passedFrom.push_back(DirType::RIGHT);
-				break;
-			case ChunkType::BOT_RIGHT:
-				passedFrom.push_back(DirType::RIGHT);
-				passedFrom.push_back(DirType::BOT);
-				break;
-		}
+		while(q.size() > 0) {
+			const int chunkNum = q.front().first;
+			float intensity = q.front().second;
+			q.pop();
+
+			if(!setChunks[chunkNum]) {
+				//printV2(chunkNum, intensity);
+
+				// Update current chunk
+				body[chunkNum].color.add(intensity);		// linear falloff
+				setChunks[chunkNum] = true;
+
+				// Determine surrounding chunks
+				intensity /= COLOR_INTENSITY_FALLOFF;
 
 
-		for(const auto& dir : passedFrom) {
-			int num;
-			switch(dir) {
-				case DirType::TOP:
-					num = chunkNum + CHUNKS_PER_AXIS;
-					break;
-				case DirType::RIGHT:
-					num = chunkNum-1;
-					break;
-				case DirType::BOT:
-					num = chunkNum - CHUNKS_PER_AXIS;
-					break;
-				case DirType::LEFT:
-					num = chunkNum+1;
-					break;
+				if(intensity > 0) {
+					getSurroundingChunkNums(q, intensity, chunkNum, setChunks);
+				}
+
+				//cin.get();
 			}
-
-			body[num].color.add(colorIntensity-COLOR_INTENSITY_FALLOFF);
-
-			// TODO: limit numPasses by CHUNKS_PER_AXIS
-			updateChunkColor(num, dir, colorIntensity-COLOR_INTENSITY_FALLOFF, numPasses+1);
 		}
 	}
+
+	void getSurroundingChunkNums(queue<pair<int, float>>& q, const float& intensity, const int& chunkNum, vector<bool>& setChunks) {
+		const pair<int, float> T = make_pair(chunkNum - CHUNKS_PER_AXIS, intensity);
+		const pair<int, float> TR = make_pair(T.first + 1, intensity);
+		const pair<int, float> R = make_pair(chunkNum + 1, intensity);
+		const pair<int, float> BR = make_pair(chunkNum + CHUNKS_PER_AXIS + 1, intensity);
+		const pair<int, float> B = make_pair(BR.first - 1, intensity);
+		const pair<int, float> BL = make_pair(B.first - 1, intensity);
+		const pair<int, float> L = make_pair(chunkNum - 1, intensity);
+		const pair<int, float> TL = make_pair(T.first - 1, intensity);
+
+		// Any bordering chunk (including diagonals except mid)
+		switch(body[chunkNum].type) {
+			case ChunkType::TOP_LEFT:	return q.push(R), q.push(BR), q.push(B);
+			case ChunkType::TOP_MID:	return q.push(R), q.push(BR), q.push(B), q.push(BL), q.push(L);
+			case ChunkType::TOP_RIGHT:	return q.push(B), q.push(BL), q.push(L);
+			case ChunkType::MID_LEFT:	return q.push(T), q.push(TR), q.push(R), q.push(BR), q.push(B);
+			case ChunkType::MID:		return q.push(T), q.push(R), q.push(B), q.push(L);
+			case ChunkType::MID_RIGHT:	return q.push(T), q.push(B), q.push(BL), q.push(L), q.push(TL);
+			case ChunkType::BOT_LEFT:	return q.push(T), q.push(TR), q.push(R);
+			case ChunkType::BOT_MID:	return q.push(T), q.push(TR), q.push(R), q.push(L), q.push(TL);
+			case ChunkType::BOT_RIGHT:	return q.push(T); q.push(L), q.push(TL);
+		}
+	}
+
 } player;
 
 #endif // PLAYER_H
