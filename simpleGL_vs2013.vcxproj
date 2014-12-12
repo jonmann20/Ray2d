@@ -147,6 +147,7 @@
     <ClCompile Include="light.cpp" />
     <ClCompile Include="line.cpp" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="rect.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

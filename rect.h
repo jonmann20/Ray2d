@@ -9,11 +9,7 @@ public:
 	Vec3 INIT_COLOR;
 	Vec3 color;
 
-	Rect() {}
-
-	Rect(float x, float y, float w, float h)
-		: pos(Vec2(x, y)), size(Vec2(w, h))
-	{}
+	Rect(float x, float y, float w, float h);
 };
 
 #endif // RECT_H

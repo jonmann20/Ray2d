@@ -5,15 +5,6 @@
     <CudaCompile Include="references.cu" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="vec.h">
-      <Filter>geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="rect.h">
-      <Filter>geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="circle.h">
-      <Filter>geometry</Filter>
-    </ClInclude>
     <ClInclude Include="collision.h" />
     <ClInclude Include="game.h">
       <Filter>hdr</Filter>
@@ -34,14 +25,16 @@
     <ClInclude Include="input.h">
       <Filter>hdr</Filter>
     </ClInclude>
+    <ClInclude Include="vec.h" />
+    <ClInclude Include="circle.h" />
+    <ClInclude Include="rect.h">
+      <Filter>hdr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="readme.md" />
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="geometry">
-      <UniqueIdentifier>{56960142-b9a2-4b91-9604-17943584c727}</UniqueIdentifier>
-    </Filter>
     <Filter Include="hdr">
       <UniqueIdentifier>{99382b20-2b85-4a5c-b6f1-209bab5b10b0}</UniqueIdentifier>
     </Filter>
@@ -66,6 +59,9 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="input.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="rect.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
