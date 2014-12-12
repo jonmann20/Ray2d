@@ -9,50 +9,24 @@
 class Vec2 {
 public:
 	float x, y;
-
-	Vec2() {}
-
-	Vec2(float x, float y)
-		: x(x), y(y)
-	{}
-
 	static const Vec2 ZERO;
 
-	Vec2 operator+(const Vec2& other) {
-		return Vec2(x + other.x, y + other.y);
-	}
+	Vec2() {}
+	Vec2(float x, float y);
 
-	Vec2 operator-(const Vec2& other) {
-		return Vec2(x - other.x, y - other.y);
-	}
+	Vec2 operator+(const Vec2& other);
+	Vec2 operator-(const Vec2& other);
+	Vec2 operator/(const Vec2& other);
+	Vec2 operator*(const Vec2& other);
+		// dot/inner product
 
-	Vec2 operator/(const Vec2& other) {
-		return Vec2(x / other.x, y / other.y);
-	}
+	float cross(const Vec2& other) const;
 
-	// dot/inner product
-	Vec2 operator*(const Vec2& other) {
-		return Vec2(x * other.x, y * other.y);
-	}
+	bool operator==(const Vec2& other);
+	bool operator!=(const Vec2& other);
 
-	float cross(const Vec2& other) const {
-		return x * other.y - y * other.x;
-	}
-
-	bool operator==(const Vec2& other) {
-		return (abs(x - other.x) < 0.001) && (abs(y - other.y) < 0.001);
-	}
-
-	bool operator!=(const Vec2& other) {
-		return (abs(x - other.x) > 0.001) || (abs(y - other.y) > 0.001);
-	}
-
-	float length() const {
-		return sqrt(x*x + y*y);
-	}
+	float length() const;
 };
-
-//const Vec2 Vec2::ZERO = Vec2(0, 0);
 
 
 /*
@@ -63,23 +37,12 @@ public:
 	float x, y, z;
 
 	Vec3() {}
+	Vec3(float x, float y, float z);
 
-	Vec3(float x, float y, float z)
-		: x(x), y(y), z(z)
-	{}
+	void multiply(float s);
+		// scalar multiplication
 
-	// scalar multiplication
-	void multiply(float s) {
-		x *= s;
-		y *= s;
-		z *= s;
-	}
-
-	void add(float s) {
-		x += s;
-		y += s;
-		z += s;
-	}
+	void add(float s);
 };
 
 #endif // VEC_H
