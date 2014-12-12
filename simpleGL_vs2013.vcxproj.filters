@@ -26,8 +26,10 @@
       <Filter>hdr</Filter>
     </ClInclude>
     <ClInclude Include="vec.h" />
-    <ClInclude Include="circle.h" />
     <ClInclude Include="rect.h">
+      <Filter>hdr</Filter>
+    </ClInclude>
+    <ClInclude Include="circle.h">
       <Filter>hdr</Filter>
     </ClInclude>
   </ItemGroup>
@@ -62,6 +64,9 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="rect.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="circle.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

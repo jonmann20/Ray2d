@@ -142,6 +142,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="chunk.cpp" />
+    <ClCompile Include="circle.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="light.cpp" />
