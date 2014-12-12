@@ -4,6 +4,7 @@
 #include "input.h"
 #include "chunk.h"
 #include "light.h"
+#include "color.h"
 //#include "utils.h"
 
 #include <GL/glew.h>
@@ -60,14 +61,13 @@ Player::Player(float x, float y, float w, float h)
 	COLOR_INTENSITY_FALLOFF = 1.1;
 
 	// Initialize body chunks
-	Vec3 color(0.1, 0.1, 0.1);
 	float cx = 0;
 	float cy = 0;
 	const float cw = w/CHUNKS_PER_AXIS;
 	const float ch = h/CHUNKS_PER_AXIS;
 
 	for(int i=0; i < CHUNKS; ++i) {
-		body.push_back(Chunk(cx, cy, cw, ch, color, getChunkType(i)));
+		body.push_back(Chunk(cx, cy, cw, ch, Color::GRAY, getChunkType(i)));
 
 		if((i+1) % CHUNKS_PER_AXIS == 0 && i != 0) {
 			cx = 0;
@@ -134,8 +134,6 @@ void Player::updateChunkColors(const int& chunkNum, float initIntensity) {		// T
 		q.pop();
 
 		if(!setChunks[chunkNum]) {
-			//printV2(chunkNum, intensity);
-
 			// Update current chunk
 			body[chunkNum].color.add(intensity);		// linear falloff
 			setChunks[chunkNum] = true;
@@ -147,8 +145,6 @@ void Player::updateChunkColors(const int& chunkNum, float initIntensity) {		// T
 			if(intensity > 0) {
 				getSurroundingChunkNums(q, intensity, chunkNum, setChunks);
 			}
-
-			//cin.get();
 		}
 	}
 }

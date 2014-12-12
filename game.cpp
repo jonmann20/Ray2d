@@ -2,6 +2,7 @@
 
 #include "vec.h"
 #include "light.h"
+#include "color.h"
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
@@ -16,8 +17,7 @@ Game::Game() :
 	frameCount(0), fps(0), currentTime(0), previousTime(0),
 	DEBUG_INFOX(-0.98)
 {
-	Vec3 warmFlourescent = Vec3(1, 0.95686, 0.89804);	// http://planetpixelemporium.com/tutorialpages/light.html)
-	lights.push_back({Light(0, 0.85, LightType::FLOURESCENT, warmFlourescent, true)});
+	lights.push_back({Light(0, 0.85, LightType::FLOURESCENT, Color::WARM_FLUORESCENT, true)});
 }
 
 void Game::drawLights() const {
@@ -58,7 +58,7 @@ void Game::drawFPS() const {
 	//  Load the identity matrix so that FPS string being drawn won't get animates
 	glLoadIdentity();
 
-	glColor3f(0.6, 0.6, 0);
+	glColor3f(Color::YELLOW.x, Color::YELLOW.y, Color::YELLOW.z);
 	drawText(Vec2(DEBUG_INFOX, 0.92), "FPS: %4.2f", fps);
 }
 

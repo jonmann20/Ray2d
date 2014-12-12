@@ -35,6 +35,9 @@
     <ClInclude Include="vec.h">
       <Filter>hdr\geometry</Filter>
     </ClInclude>
+    <ClInclude Include="color.h">
+      <Filter>hdr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="readme.md" />
@@ -83,6 +86,9 @@
     </ClCompile>
     <ClCompile Include="vec.cpp">
       <Filter>src\geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="color.cpp">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

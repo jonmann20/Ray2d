@@ -130,6 +130,7 @@
     <ClInclude Include="chunk.h" />
     <ClInclude Include="circle.h" />
     <ClInclude Include="collision.h" />
+    <ClInclude Include="color.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="light.h" />
@@ -143,6 +144,7 @@
     <ClCompile Include="chunk.cpp" />
     <ClCompile Include="circle.cpp" />
     <ClCompile Include="collision.cpp" />
+    <ClCompile Include="color.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="light.cpp" />

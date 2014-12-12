@@ -2,6 +2,7 @@
 
 #include "utils.h"
 #include "vec.h"
+#include "color.h"
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
@@ -11,7 +12,7 @@ Line::Line(float x1, float y1, float x2, float y2, DirType type /*= DirType::NON
 {}
 
 void Line::draw() const {
-	glColor3f(0.8, 0, 0);
+	glColor3f(Color::RED.x, Color::RED.y, Color::RED.z);
 	glBegin(GL_LINES);
 		glVertex2f(start.x, start.y);
 		glVertex2f(end.x, end.y);
