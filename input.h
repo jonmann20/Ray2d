@@ -1,15 +1,9 @@
 #ifndef INPUT_H_
 #define INPUT_H_
 
-bool keysDown[256];
+extern bool keysDown[];
 
-void keydown(unsigned char key, int x, int y) {
-	//printV(key);
-	keysDown[key] = true;
-}
-
-void keyup(unsigned char key, int x, int y) {
-	keysDown[key] = false;
-}
+void keydown(unsigned char key, int x, int y);
+void keyup(unsigned char key, int x, int y);
 
 #endif // INPUT_H

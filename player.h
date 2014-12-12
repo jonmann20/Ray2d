@@ -25,8 +25,6 @@ public:
 	Vec2 pos;
 	vector<Chunk> body;		// relative to pos
 	
-	Player() {}
-
 	Player(float x, float y, float w, float h);
 
 	void draw() const;
@@ -35,6 +33,8 @@ public:
 	void updatePos();
 	void updateChunkColors(const int& chunkNum, float initIntensity);
 	void getSurroundingChunkNums(queue<pair<int, float>>& q, const float& intensity, const int& chunkNum, vector<bool>& setChunks);
-} player;
+};
+
+extern Player player;
 
 #endif // PLAYER_H

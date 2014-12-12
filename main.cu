@@ -8,12 +8,11 @@
 
 // FlappyRay helpers
 #include "game.h"
-#include "light.h"
 #include "input.h"
 #include "player.h"
 
-#include <iostream>
-using namespace std;
+//#include <iostream>
+//using namespace std;
 
 #pragma region CUDA
 __global__
@@ -37,7 +36,7 @@ void testCuda() {
 	cudaMemcpy(&a, da, size, cudaMemcpyDeviceToHost);
 	cudaFree(da);
 
-	cout << "a: " << a << endl;
+	//cout << "a: " << a << endl;
 }
 #pragma endregion CUDA
 
@@ -66,10 +65,7 @@ void render() {
 
 
 int main(int argc, char* argv[]) {
-	//----- Game Setup
-	player = Player(0.1, 0, 0.25, 0.25);
-
-	//----- OpenGL setup
+	// OpenGL setup
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
 	glutInitWindowSize(game.FULLW, game.FULLH);

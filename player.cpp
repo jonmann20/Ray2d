@@ -10,6 +10,8 @@
 #include "input.h"
 //#include "utils.h"
 
+Player player = Player(0.1, 0, 0.25, 0.25);
+
 ChunkType Player::getChunkType(const int& chunkNum) const {
 	if(chunkNum == 0) {
 		return ChunkType::TOP_LEFT;

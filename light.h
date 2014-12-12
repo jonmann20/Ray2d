@@ -12,14 +12,14 @@ enum LightType { FLOURESCENT, INCANDESCENT };
 class Light {
 private:
 	const float INTENSITY;
+	vector<Line> raySegments;
+	vector<Line> rays;
 
 public:
 	Vec2 pos;
 	Vec3 color;
 	LightType type;
 	bool raysVisible;
-	vector<Line> rays;
-	vector<Line> raySegments;
 	
 	Light(float x, float y, LightType type, Vec3 color, bool raysVisible=false);
 
