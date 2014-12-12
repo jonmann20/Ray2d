@@ -17,21 +17,21 @@ private:
 	float fps;
 	int currentTime, previousTime;
 
+	// debugging
+	const float DEBUG_INFOX;
+
 public:
 	const int FULLW, FULLH;
 	vector<Light> lights;
 
-	// debugging
-	const float DEBUG_INFOX;
-
 	Game();
 
-	void drawLights();
+	void drawLights() const;
 	void checkRayCollision();
 
 	void calculateFPS();
-	void drawFPS();
-	void drawText(Vec2 pos, char* format, ...);
+	void drawFPS() const;
+	void drawText(Vec2 pos, char* format, ...) const;
 };
 
 extern Game game;

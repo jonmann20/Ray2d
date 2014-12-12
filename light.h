@@ -25,7 +25,7 @@ public:
 
 	void checkRays();
 	void checkRay(Line ray);
-	void draw();
+	void draw() const;
 };
 
 #endif // LIGHT_H

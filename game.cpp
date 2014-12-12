@@ -18,14 +18,14 @@ Game::Game() :
 	lights.push_back({Light(0, 0.85, LightType::FLOURESCENT, warmFlourescent, true)});
 }
 
-void Game::drawLights() {
-	for(auto light : lights) {
+void Game::drawLights() const {
+	for(const auto& light : lights) {
 		light.draw();
 	}
 }
 
 void Game::checkRayCollision() {
-	for(Light light : lights) {
+	for(Light& light : lights) {
 		light.checkRays();
 	}
 }
@@ -52,7 +52,7 @@ void Game::calculateFPS() {
 	}
 }
 
-void Game::drawFPS() {
+void Game::drawFPS() const {
 	//  Load the identity matrix so that FPS string being drawn won't get animates
 	glLoadIdentity();
 
@@ -60,7 +60,7 @@ void Game::drawFPS() {
 	drawText(Vec2(DEBUG_INFOX, 0.92), "FPS: %4.2f", fps);
 }
 
-void Game::drawText(Vec2 pos, char* format, ...) {
+void Game::drawText(Vec2 pos, char* format, ...) const {
 	// Initialize a variable argument list
 	va_list args;
 	va_start(args, format);

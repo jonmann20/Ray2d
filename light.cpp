@@ -28,7 +28,7 @@ void Light::checkRays() {
 	}
 
 	// reset raySegments
-	//raySegments.clear();
+	raySegments.clear();
 
 	for(const auto& ray : rays) {
 		checkRay(ray);
@@ -38,7 +38,6 @@ void Light::checkRays() {
 void Light::checkRay(Line ray) {
 	Line raySegment = ray;
 	int chunkNum = 0;
-
 
 	//// window edges
 	//Line window[4] ={
@@ -100,10 +99,9 @@ void Light::checkRay(Line ray) {
 	}
 
 	raySegments.push_back(raySegment);
-	printV(raySegments.size());
 }
 
-void Light::draw() {
+void Light::draw() const {
 	// light
 	float offsetY = 0.08;
 
@@ -116,8 +114,6 @@ void Light::draw() {
 	glEnd();
 
 	// rays
-	//printV(raySegments.size());
-
 	if(raysVisible) {
 		for(const auto& i : raySegments) {
 			i.draw();
