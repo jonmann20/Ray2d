@@ -1,6 +1,5 @@
 #include "light.h"
 
-#include "references.cu"
 #include "game.h"
 #include "vec.h"
 #include "line.h"
@@ -8,6 +7,9 @@
 #include "player.h"
 #include "collision.h"
 #include "chunk.h"
+
+#include <GL/glew.h>
+#include <GL/freeglut.h>
 
 #include <iostream>
 using namespace std;

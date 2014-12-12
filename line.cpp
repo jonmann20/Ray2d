@@ -1,8 +1,10 @@
 #include "line.h"
 
-#include "references.cu"
 #include "utils.h"
 #include "vec.h"
+
+#include <GL/glew.h>
+#include <GL/freeglut.h>
 
 Line::Line(float x1, float y1, float x2, float y2, DirType type /*= DirType::NONE*/)
 	: start(Vec2(x1, y1)), end(Vec2(x2, y2)), type(type) 

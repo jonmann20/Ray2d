@@ -1,14 +1,17 @@
 #include "player.h"
 
-#include "references.cu"
+#include "game.h"
+#include "input.h"
+#include "chunk.h"
+#include "light.h"
+//#include "utils.h"
+
+#include <GL/glew.h>
+#include <GL/freeglut.h>
+
 #include <vector>
 #include <queue>
 #include <iostream>
-#include <iomanip>
-
-#include "chunk.h"
-#include "input.h"
-//#include "utils.h"
 
 Player player = Player(0.1, 0, 0.25, 0.25);
 
@@ -95,18 +98,25 @@ void Player::updatePos() {
 	if(keysDown['w']) {
 		pos.y += DT;
 	}
+
 	if(keysDown['a']) {
 		pos.x -= DT;
 	}
+
 	if(keysDown['s']) {
 		pos.y -= DT;
 	}
+
 	if(keysDown['d']) {
 		pos.x += DT;
 	}
-	//if(input.keysDown[32]) {			// spacebar
-	//	game.lights.raysVisible = ...
-	//}
+
+	if(keysDown[32]) {			// spacebar
+		for(auto& i : game.lights) {
+			i.raysVisible = !i.raysVisible;
+		}
+	}
+
 	if(keysDown[27]) {			// escape
 		exit(0);
 	}

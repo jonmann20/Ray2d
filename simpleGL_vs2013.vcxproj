@@ -120,7 +120,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <CudaCompile Include="main.cu" />
-    <CudaCompile Include="references.cu" />
   </ItemGroup>
   <ItemGroup>
     <None Include="readme.md">

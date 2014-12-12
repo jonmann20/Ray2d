@@ -1,8 +1,10 @@
 #include "game.h"
 
-#include "references.cu"
 #include "vec.h"
 #include "light.h"
+
+#include <GL/glew.h>
+#include <GL/freeglut.h>
 
 #include <vector>
 using namespace std;
