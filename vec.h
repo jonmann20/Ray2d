@@ -52,7 +52,7 @@ public:
 	}
 };
 
-const Vec2 Vec2::ZERO = Vec2(0, 0);
+//const Vec2 Vec2::ZERO = Vec2(0, 0);
 
 
 /*

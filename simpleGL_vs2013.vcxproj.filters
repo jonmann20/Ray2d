@@ -5,7 +5,6 @@
     <CudaCompile Include="references.cu" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="utils.h" />
     <ClInclude Include="vec.h">
       <Filter>geometry</Filter>
     </ClInclude>
@@ -15,10 +14,6 @@
     <ClInclude Include="circle.h">
       <Filter>geometry</Filter>
     </ClInclude>
-    <ClInclude Include="player.h" />
-    <ClInclude Include="line.h">
-      <Filter>geometry</Filter>
-    </ClInclude>
     <ClInclude Include="input.h" />
     <ClInclude Include="collision.h" />
     <ClInclude Include="chunk.h" />
@@ -26,6 +21,13 @@
       <Filter>hdr</Filter>
     </ClInclude>
     <ClInclude Include="light.h">
+      <Filter>hdr</Filter>
+    </ClInclude>
+    <ClInclude Include="line.h">
+      <Filter>hdr</Filter>
+    </ClInclude>
+    <ClInclude Include="utils.h" />
+    <ClInclude Include="player.h">
       <Filter>hdr</Filter>
     </ClInclude>
   </ItemGroup>
@@ -48,6 +50,12 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="light.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="line.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="player.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

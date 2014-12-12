@@ -1,7 +1,6 @@
 #include "game.h"
 
-//#include "references.cu"
-//#include "utils.h"
+#include "references.cu"
 #include "vec.h"
 #include "light.h"
 
@@ -13,12 +12,24 @@ Game game;
 Game::Game() :
 	FULLW(720), FULLH(720),
 	frameCount(0), fps(0), currentTime(0), previousTime(0),
-	debugRays(true), DEBUG_INFOX(-0.98)//,
-	//lights({Light(12)})
-	//fontStyle(GLUT_BITMAP_HELVETICA_12),
-	//lights({Light(0, 0.85, LightType::FLOURESCENT, Vec3(1, 0.95686, 0.89804), true)})		// http://planetpixelemporium.com/tutorialpages/light.html
-{}
-/*
+	DEBUG_INFOX(-0.98)
+{
+	Vec3 warmFlourescent = Vec3(1, 0.95686, 0.89804);	// http://planetpixelemporium.com/tutorialpages/light.html)
+	lights.push_back({Light(0, 0.85, LightType::FLOURESCENT, warmFlourescent, true)});
+}
+
+void Game::drawLights() {
+	for(auto light : lights) {
+		light.draw();
+	}
+}
+
+void Game::checkRayCollision() {
+	for(Light light : lights) {
+		light.checkRays();
+	}
+}
+
 void Game::calculateFPS() {
 	++frameCount;
 
@@ -71,8 +82,8 @@ void Game::drawText(Vec2 pos, char* format, ...) {
 	glRasterPos2f(pos.x, pos.y);
 
 	for(int i=0; text[i] != '\0'; ++i) {
-		//glutBitmapCharacter(fontStyle, text[i]);
+		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, text[i]);
 	}
 
 	free(text);
-}*/
+}

@@ -1,9 +1,6 @@
 #ifndef UTILS_H_
 #define UTILS_H_
 
-#include "game.h"
-#include "vec.h"
-
 #include <iostream>
 using namespace std;
 
@@ -11,8 +8,9 @@ using namespace std;
 #define printV(v) cout << #v << ": " << v << endl
 #define printV2(a, b) cout << #a << ", " << #b << ": " << a << ", " << b << endl
 
-enum DirType {TOP, RIGHT, BOT, LEFT, NONE};
-char* DirTypes[] = {"TOP", "RIGHT", "BOT", "LEFT", "NONE"};
+enum DirType { TOP, RIGHT, BOT, LEFT, NONE };
+const char* const DirTypes[] = {"TOP", "RIGHT", "BOT", "LEFT", "NONE"};
+
 
 //Vec3(1, 0, 0)		// red
 //Vec3(0, 1, 0)		// green

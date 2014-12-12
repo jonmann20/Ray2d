@@ -4,8 +4,6 @@
 class Vec2;
 class Light;
 
-//#include "references.cu"
-
 #include <vector>
 using namespace std;
 
@@ -24,17 +22,16 @@ public:
 	vector<Light> lights;
 
 	// debugging
-	bool debugRays;
 	const float DEBUG_INFOX;
-
-	// OpenGL
-	//GLvoid* fontStyle;
 
 	Game();
 
-	//void calculateFPS();
-	//void drawFPS();
-	//void drawText(Vec2 pos, char* format, ...);
+	void drawLights();
+	void checkRayCollision();
+
+	void calculateFPS();
+	void drawFPS();
+	void drawText(Vec2 pos, char* format, ...);
 };
 
 extern Game game;
