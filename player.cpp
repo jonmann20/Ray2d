@@ -54,7 +54,8 @@ ChunkType Player::getChunkType(const int& chunkNum) const {
 
 
 Player::Player(float x, float y, float w, float h)
-	: pos(Vec2(x, y)) {
+	: pos(Vec2(x, y))
+{
 	DT = 0.0015;
 	CHUNKS = pow(25, 2);
 	CHUNKS_PER_AXIS = sqrt(CHUNKS);
