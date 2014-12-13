@@ -140,7 +140,6 @@ void Player::updateChunkColors(const int& chunkNum, float initIntensity) {		// T
 			// Determine surrounding chunks
 			intensity /= COLOR_INTENSITY_FALLOFF;
 
-
 			if(intensity > 0) {
 				getSurroundingChunkNums(q, intensity, chunkNum, setChunks);
 			}

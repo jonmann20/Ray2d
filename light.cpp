@@ -28,7 +28,7 @@ void Light::checkRays() {
 	raySegments.clear();
 
 	// Shoot out rays
-	const int NUM_RAYS = 50;
+	const int NUM_RAYS = 46;
 	const float OFFSETX = 0.04;
 	const float WIDTH = 0.32;
 	const float DTX = (WIDTH - OFFSETX*2) / NUM_RAYS;

@@ -17,7 +17,7 @@ Game::Game() :
 	frameCount(0), fps(0), currentTime(0), previousTime(0),
 	DEBUG_INFOX(-0.98)
 {
-	lights.push_back({Light(-0.16, 0.85, LightType::FLOURESCENT, Color::WARM_FLUORESCENT, true)});
+	lights.push_back({Light(-0.2, 0.85, LightType::FLOURESCENT, Color::WARM_FLUORESCENT, true)});
 }
 
 void Game::drawLights() const {
