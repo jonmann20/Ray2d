@@ -25,6 +25,10 @@ public:
 
 	void checkRays();
 	void checkRay(Line ray);
+	void reflectRay(const Line& raySegment);
+		// EFFECTS: calls checkRay recursively
+		//			reflected ray's length is equalt to the raySegment, not the original ray
+
 	void draw() const;
 };
 

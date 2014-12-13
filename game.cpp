@@ -13,11 +13,11 @@ using namespace std;
 Game game;
 
 Game::Game() :
-	FULLW(720), FULLH(720),
+	FULLW(1280), FULLH(720),
 	frameCount(0), fps(0), currentTime(0), previousTime(0),
 	DEBUG_INFOX(-0.98)
 {
-	lights.push_back({Light(0, 0.85, LightType::FLOURESCENT, Color::WARM_FLUORESCENT, true)});
+	lights.push_back({Light(-0.16, 0.85, LightType::FLOURESCENT, Color::WARM_FLUORESCENT, true)});
 }
 
 void Game::drawLights() const {

@@ -16,6 +16,32 @@
 
 Player player = Player(0.1, 0, 0.25, 0.25);
 
+Player::Player(float x, float y, float w, float h)
+	: pos(Vec2(x, y)) {
+	DT = 0.0015;
+	CHUNKS = pow(40, 2);
+	CHUNKS_PER_AXIS = sqrt(CHUNKS);
+	COLOR_INTENSITY_FALLOFF = 1.1;
+
+	// Initialize body chunks
+	float cx = 0;
+	float cy = 0;
+	const float cw = w/CHUNKS_PER_AXIS;
+	const float ch = h/CHUNKS_PER_AXIS;
+
+	for(int i=0; i < CHUNKS; ++i) {
+		body.push_back(Chunk(cx, cy, cw, ch, Color::GRAY, getChunkType(i)));
+
+		if((i+1) % CHUNKS_PER_AXIS == 0 && i != 0) {
+			cx = 0;
+			cy -= ch;
+		}
+		else {
+			cx += w/CHUNKS_PER_AXIS;
+		}
+	}
+}
+
 ChunkType Player::getChunkType(const int& chunkNum) const {
 	if(chunkNum == 0) {
 		return ChunkType::TOP_LEFT;
@@ -50,34 +76,6 @@ ChunkType Player::getChunkType(const int& chunkNum) const {
 	}
 
 	return ChunkType::MID;
-}
-
-
-Player::Player(float x, float y, float w, float h)
-	: pos(Vec2(x, y))
-{
-	DT = 0.0015;
-	CHUNKS = pow(25, 2);
-	CHUNKS_PER_AXIS = sqrt(CHUNKS);
-	COLOR_INTENSITY_FALLOFF = 1.1;
-
-	// Initialize body chunks
-	float cx = 0;
-	float cy = 0;
-	const float cw = w/CHUNKS_PER_AXIS;
-	const float ch = h/CHUNKS_PER_AXIS;
-
-	for(int i=0; i < CHUNKS; ++i) {
-		body.push_back(Chunk(cx, cy, cw, ch, Color::GRAY, getChunkType(i)));
-
-		if((i+1) % CHUNKS_PER_AXIS == 0 && i != 0) {
-			cx = 0;
-			cy -= ch;
-		}
-		else {
-			cx += w/CHUNKS_PER_AXIS;
-		}
-	}
 }
 
 void Player::draw() const {

@@ -69,7 +69,7 @@ int main(int argc, char* argv[]) {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
 	glutInitWindowSize(game.FULLW, game.FULLH);
-	glutInitWindowPosition(850, 160);
+	glutInitWindowPosition(550, 160);
 	glutCreateWindow("FlappyRay Engine Demo");
 
 	glutDisplayFunc(render);

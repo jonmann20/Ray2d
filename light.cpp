@@ -14,14 +14,9 @@
 #include <iostream>
 using namespace std;
 
-
 Light::Light(float x, float y, LightType type, Vec3 color, bool raysVisible /*=false*/)
 	: INTENSITY(0.1), pos(Vec2(x, y)), type(type), color(color), raysVisible(raysVisible)
-{
-	for(int i=0; i < 50; ++i) {
-		rays.push_back(Line(0.1, 0.85, -0.35 + i*0.005, -0.7, DirType::NONE));
-	}
-}
+{}
 
 void Light::checkRays() {
 	// reset player color
@@ -32,15 +27,61 @@ void Light::checkRays() {
 	// reset raySegments
 	raySegments.clear();
 
-	for(const auto& ray : rays) {
-		checkRay(ray);
+	// Shoot out rays
+	const int NUM_RAYS = 50;
+	const float OFFSETX = 0.04;
+	const float WIDTH = 0.32;
+	const float DTX = (WIDTH - OFFSETX*2) / NUM_RAYS;
+	const float DTX2 = (WIDTH + OFFSETX*4) / NUM_RAYS;
+
+	for(int i=0; i < NUM_RAYS; ++i) {
+		checkRay(Line(pos.x + OFFSETX + i*DTX, pos.y, pos.x - OFFSETX*2 + i*DTX2, -0.8, DirType::NONE));
 	}
+}
+
+void Light::reflectRay(const Line& raySegment) {
+	float dx = raySegment.start.x - raySegment.end.x;
+	float dy = raySegment.start.y - raySegment.end.y;
+	float theta = atan2f(dy, dx) * 180/PI;	// counter clockwise
+	float x, y;
+	
+	if(theta == 0 || theta == 90 || theta == 180 || theta == 270 || theta == 360) {
+		return;
+	}
+
+	switch(raySegment.type) {
+		case DirType::TOP:
+			x = raySegment.end.x - dx;
+			y = raySegment.start.y;
+			break;
+		case DirType::RIGHT:
+			//if(theta < 90) {
+				y = raySegment.end.y - dy;
+			//}
+			//else {
+				//y = raySegment.end.y + dy;
+			//}
+
+			x = raySegment.start.x;
+			break;
+		case DirType::BOT:
+			// TODO:
+			break;
+		case DirType::LEFT:
+			y = raySegment.end.y - dy;
+			x = raySegment.start.x;
+			break;
+	}
+
+	//pr3nt(theta, x, y);
+
+	return checkRay(Line(raySegment.end.x, raySegment.end.y, x, y));
 }
 
 void Light::checkRay(Line ray) {
 	Line raySegment = ray;
 	int chunkNum = 0;
-
+	
 	//// window edges
 	//Line window[4] ={
 	//	Line(0, 0, game.FULLW, 0),			// top
@@ -60,8 +101,8 @@ void Light::checkRay(Line ray) {
 	//}
 
 	// player
-	for(auto& chunk : player.body) {
-		for(auto& line : chunk.lines) {
+	for(const auto& chunk : player.body) {
+		for(const auto& line : chunk.lines) {
 			// convert to absolute world position
 			float x = player.pos.x + line.start.x;
 			float y = player.pos.y + line.start.y;
@@ -72,28 +113,12 @@ void Light::checkRay(Line ray) {
 
 			if(cr.wasCollision && ray.start != cr.intersectionPt) {
 				player.updateChunkColors(chunkNum, INTENSITY);
-				
+
 				raySegment.end = cr.intersectionPt;
+				raySegment.type = line.type;
 				raySegments.push_back(raySegment);
 
-				// TODO: use trig with angles
-				// calculate newRay's endPt
-				Vec2 endPt;
-				if(line.type == DirType::TOP) {
-					endPt = Vec2((ray.end.x - ray.start.x) * 2, ray.start.y - ray.end.y);
-				}
-				else if(line.type == DirType::RIGHT) {
-					endPt = Vec2(ray.start.x, -ray.start.y);
-				}
-				else if(line.type == DirType::BOT) {
-					endPt = Vec2(-1, 1);
-				}
-				else {					// left
-					endPt = Vec2(1, 1);
-				}
-
-				// recurse on reflected ray
-				return checkRay(Line(cr.intersectionPt.x, cr.intersectionPt.y, endPt.x, endPt.y));
+				return reflectRay(raySegment);
 			}
 		}
 
