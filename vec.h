@@ -35,6 +35,7 @@ public:
 class Vec3 {
 public:
 	float x, y, z;
+	static const Vec3 ZERO;
 
 	Vec3() {}
 	Vec3(float x, float y, float z);

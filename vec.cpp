@@ -49,6 +49,8 @@ float Vec2::length() const {
 * A 3D Vector
 */
 
+const Vec3 Vec3::ZERO = Vec3(0, 0, 0);
+
 Vec3::Vec3(float x, float y, float z)
 	: x(x), y(y), z(z)
 {}

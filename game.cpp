@@ -13,7 +13,7 @@ using namespace std;
 Game game;
 
 Game::Game() :
-	FULLW(1280), FULLH(720),
+	FULLW(960), FULLH(960),	// equivalent number of pixels as 1280x720
 	frameCount(0), fps(0), currentTime(0), previousTime(0),
 	DEBUG_INFOX(-0.98)
 {

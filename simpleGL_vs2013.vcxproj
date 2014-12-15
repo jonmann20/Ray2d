@@ -117,9 +117,12 @@
     <CudaCompile>
       <TargetMachinePlatform Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">64</TargetMachinePlatform>
     </CudaCompile>
+    <ClCompile>
+      <OpenMPSupport Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</OpenMPSupport>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <CudaCompile Include="main.cu" />
+    <CudaCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="readme.md">
@@ -136,6 +139,7 @@
     <ClInclude Include="light.h" />
     <ClInclude Include="line.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="profiler.h" />
     <ClInclude Include="rect.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="vec.h" />
@@ -150,6 +154,7 @@
     <ClCompile Include="light.cpp" />
     <ClCompile Include="line.cpp" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="profiler.cpp" />
     <ClCompile Include="rect.cpp" />
     <ClCompile Include="vec.cpp" />
   </ItemGroup>

@@ -7,6 +7,9 @@
 #include "player.h"
 #include "collision.h"
 #include "chunk.h"
+#include "profiler.h"
+
+#include <omp.h>
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
@@ -19,24 +22,36 @@ Light::Light(float x, float y, LightType type, Vec3 color, bool raysVisible /*=f
 {}
 
 void Light::checkRays() {
+	
 	// reset player color
+	//profiler.start();
 	for(auto& chunk : player.body) {
 		chunk.color = chunk.INIT_COLOR;
 	}
+	//profiler.end("reset player color");
 
 	// reset raySegments
+	//profiler.start();
 	raySegments.clear();
+	//profiler.end("reset raySegments");
 
 	// Shoot out rays
-	const int NUM_RAYS = 46;
+	//profiler.start();
+	const int SPREAD_FACTOR = 16;
+	const int NUM_RAYS = 23;//46;
 	const float OFFSETX = 0.04;
 	const float WIDTH = 0.32;
 	const float DTX = (WIDTH - OFFSETX*2) / NUM_RAYS;
-	const float DTX2 = (WIDTH + OFFSETX*4) / NUM_RAYS;
+	const float DTX2 = (WIDTH + OFFSETX*(SPREAD_FACTOR*2)) / NUM_RAYS;
 
 	for(int i=0; i < NUM_RAYS; ++i) {
-		checkRay(Line(pos.x + OFFSETX + i*DTX, pos.y, pos.x - OFFSETX*2 + i*DTX2, -0.8, DirType::NONE));
+		Line ray = Line(pos.x + OFFSETX + i*DTX, pos.y, pos.x - OFFSETX*SPREAD_FACTOR + i*DTX2, -0.8);
+		checkRay(ray);
 	}
+
+	//checkRay(Line(pos.x, pos.y, pos.x + OFFSETX*5, -0.8));
+	//profiler.end("ray colliison");
+	//cin.get();
 }
 
 void Light::reflectRay(const Line& raySegment) {
@@ -55,14 +70,8 @@ void Light::reflectRay(const Line& raySegment) {
 			y = raySegment.start.y;
 			break;
 		case DirType::RIGHT:
-			//if(theta < 90) {
-				y = raySegment.end.y - dy;
-			//}
-			//else {
-				//y = raySegment.end.y + dy;
-			//}
-
 			x = raySegment.start.x;
+			y = raySegment.end.y - dy;
 			break;
 		case DirType::BOT:
 			// TODO:
@@ -73,56 +82,37 @@ void Light::reflectRay(const Line& raySegment) {
 			break;
 	}
 
-	//pr3nt(theta, x, y);
-
 	return checkRay(Line(raySegment.end.x, raySegment.end.y, x, y));
 }
 
 void Light::checkRay(Line ray) {
 	Line raySegment = ray;
-	int chunkNum = 0;
-	
-	//// window edges
-	//Line window[4] ={
-	//	Line(0, 0, game.FULLW, 0),			// top
-	//	Line(game.FULLW, 0, game.FULLW, game.FULLH),	// right
-	//	Line(game.FULLW, game.FULLH, 0, game.FULLH),	// bot
-	//	Line(0, game.FULLH, 0, 0)			// left
-	//};
 
-	//for(auto edge : window) {
-	//	CollisionResponse cr = testLineLine(ray, edge);
-	//	if(cr.wasCollision && ray.start != cr.intersectionPt) {
-	//		raySegment.end = cr.intersectionPt;
-	//		raySegments.push_back(raySegment);
+	for(int j=0; j < player.body.size(); ++j) {
+		for(int k=0; k < player.body[j].lines.size(); ++k) {
+			Line line = player.body[j].lines[k];
 
-	//		return checkRay(Line(cr.intersectionPt.x, cr.intersectionPt.y, 0, 0));	// TODO: calc endPt
-	//	}
-	//}
-
-	// player
-	for(const auto& chunk : player.body) {
-		for(const auto& line : chunk.lines) {
 			// convert to absolute world position
-			float x = player.pos.x + line.start.x;
-			float y = player.pos.y + line.start.y;
-			float x2 = player.pos.x + line.end.x;
-			float y2 = player.pos.y + line.end.y;
-			
+			const float x = player.pos.x + line.start.x;
+			const float y = player.pos.y + line.start.y;
+			const float x2 = player.pos.x + line.end.x;
+			const float y2 = player.pos.y + line.end.y;
+
 			CollisionResponse cr = testLineLine(ray, Line(x, y, x2, y2));
 
 			if(cr.wasCollision && ray.start != cr.intersectionPt) {
-				player.updateChunkColors(chunkNum, INTENSITY);
+				//profiler.start();
+				player.updateChunkColors(j, INTENSITY);
+				//profiler.endAvg("omp updateChunks");
 
 				raySegment.end = cr.intersectionPt;
 				raySegment.type = line.type;
-				raySegments.push_back(raySegment);
 
+				raySegments.push_back(raySegment);
+				
 				return reflectRay(raySegment);
 			}
 		}
-
-		++chunkNum;
 	}
 
 	raySegments.push_back(raySegment);
@@ -147,3 +137,23 @@ void Light::draw() const {
 		}
 	}
 }
+
+
+
+//// window edges
+//Line window[4] ={
+//	Line(0, 0, game.FULLW, 0),			// top
+//	Line(game.FULLW, 0, game.FULLW, game.FULLH),	// right
+//	Line(game.FULLW, game.FULLH, 0, game.FULLH),	// bot
+//	Line(0, game.FULLH, 0, 0)			// left
+//};
+
+//for(auto edge : window) {
+//	CollisionResponse cr = testLineLine(ray, edge);
+//	if(cr.wasCollision && ray.start != cr.intersectionPt) {
+//		raySegment.end = cr.intersectionPt;
+//		raySegments.push_back(raySegment);
+
+//		return checkRay(Line(cr.intersectionPt.x, cr.intersectionPt.y, 0, 0));	// TODO: calc endPt
+//	}
+//}

@@ -12,27 +12,32 @@ using namespace std;
  */
 class Player {
 private:
-	// TODO: make const
-	float DT;		// player movement
+	const float DT;		// player movement
+	const float COLOR_INTENSITY_FALLOFF;
+	
+	const int CHUNKS_PER_AXIS;
 	int CHUNKS;		// must be a perfect square
-	int CHUNKS_PER_AXIS;
-
-	float COLOR_INTENSITY_FALLOFF;
 
 	ChunkType getChunkType(const int& chunkNum) const;
+
+	// updateChunkColors helpers
+	void byTopL(const int& chunkNum, const float& initIntensity);
+	void byTopM(const int& chunkNum, const float& initIntensity);
+	void byTopR(const int& chunkNum, const float& initIntensity);
+	void byMidR(const int& chunkNum, const float& initIntensity);
+	void byMidL(const int& chunkNum, const float& initIntensity);
 
 public:
 	Vec2 pos;
 	vector<Chunk> body;		// relative to pos
 	
-	Player(float x, float y, float w, float h);
+	Player();
 
 	void draw() const;
 		// EFFECTS: Draws a rectangle in chunks
 
 	void updatePos();
-	void updateChunkColors(const int& chunkNum, float initIntensity);
-	void getSurroundingChunkNums(queue<pair<int, float>>& q, const float& intensity, const int& chunkNum, vector<bool>& setChunks);
+	void updateChunkColors(const int& chunkNum, const float& initIntensity);
 };
 
 extern Player player;
