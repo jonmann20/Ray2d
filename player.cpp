@@ -6,6 +6,7 @@
 #include "light.h"
 #include "color.h"
 #include "utils.h"
+#include "profiler.h"
 
 #include <omp.h>
 
@@ -120,9 +121,12 @@ void Player::updatePos() {
 		}
 	}
 
-	if(keysDown[27]) {			// escape
-		exit(0);
+	if(keysDown['p']) {
+		keysDown['p'] = false;
+		profiler.avg("ray collision");
 	}
+	// escape
+	//exit(0);
 	
 	glutPostRedisplay();
 }
@@ -153,8 +157,6 @@ void Player::byTopM(const int& chunkNum, const float& initIntensity) {
 	//#pragma omp parallel for
 	for(int i=0; i < CHUNKS_PER_AXIS; ++i) {
 		const float newIntensity = initIntensity - i*COLOR_INTENSITY_FALLOFF;
-		
-		//printn(omp_get_thread_num());
 
 		if(newIntensity > 0) {
 			// left column - bottom left

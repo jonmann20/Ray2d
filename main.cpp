@@ -10,7 +10,9 @@
 
 void update() {
 	player.updatePos();
+	//profiler.start();
 	game.checkRayCollision();
+	//profiler.end("checkRayCollision");
 
 	glutPostRedisplay();
 }

@@ -19,7 +19,7 @@ void Profiler::start() {
 		cout << "QueryPerformanceFrequency failed!\n";
 
 	PCFreq = double(li.QuadPart)/1000.0;
-
+	//pTimes.clear();
 	QueryPerformanceCounter(&li);
 	CounterStart = li.QuadPart;
 }
@@ -30,16 +30,10 @@ void Profiler::end(const string& str) {
 
 	double t = double(li.QuadPart-CounterStart)/PCFreq;
 	pTimes.push_back(t);
-	cout << str << ": " << t << " ms\n";
+	//cout << str << ": " << t << " ms\n";
 }
 
-void Profiler::endAvg(const string& str) {
-	LARGE_INTEGER li;
-	QueryPerformanceCounter(&li);
-
-	double t = double(li.QuadPart-CounterStart)/PCFreq;
-	pTimes.push_back(t);
-	
+void Profiler::avg(const string& str) {
 	double sum = 0.0;
 	for(const auto& i : pTimes) {
 		sum += i;
@@ -47,7 +41,7 @@ void Profiler::endAvg(const string& str) {
 
 	cout.precision(3);
 	cout << fixed;
-	cout << str << " (avg): " << sum / pTimes.size() << " ms\n";
+	cout << str << " (" << pTimes.size() << " samples): " << sum / pTimes.size() << " ms average\n";
 	pTimes.clear();
 }
 

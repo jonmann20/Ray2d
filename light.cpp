@@ -19,24 +19,22 @@ using namespace std;
 
 Light::Light(float x, float y, LightType type, Vec3 color, bool raysVisible /*=false*/)
 	: INTENSITY(0.1), pos(Vec2(x, y)), type(type), color(color), raysVisible(raysVisible)
-{}
+{
+	omp_init_lock(&raySegmentsLock);
+}
 
 void Light::checkRays() {
-	
 	// reset player color
-	//profiler.start();
-	for(auto& chunk : player.body) {
-		chunk.color = chunk.INIT_COLOR;
+	#pragma omp parallel for
+	for(int i=0; i < player.body.size(); ++i) {
+		player.body[i].color = player.body[i].INIT_COLOR;
 	}
-	//profiler.end("reset player color");
 
 	// reset raySegments
-	//profiler.start();
 	raySegments.clear();
-	//profiler.end("reset raySegments");
 
 	// Shoot out rays
-	//profiler.start();
+	profiler.start();
 	const int SPREAD_FACTOR = 16;
 	const int NUM_RAYS = 23;//46;
 	const float OFFSETX = 0.04;
@@ -44,14 +42,14 @@ void Light::checkRays() {
 	const float DTX = (WIDTH - OFFSETX*2) / NUM_RAYS;
 	const float DTX2 = (WIDTH + OFFSETX*(SPREAD_FACTOR*2)) / NUM_RAYS;
 
+	#pragma omp parallel for
 	for(int i=0; i < NUM_RAYS; ++i) {
 		Line ray = Line(pos.x + OFFSETX + i*DTX, pos.y, pos.x - OFFSETX*SPREAD_FACTOR + i*DTX2, -0.8);
 		checkRay(ray);
 	}
+	profiler.end("ray colliison");
 
 	//checkRay(Line(pos.x, pos.y, pos.x + OFFSETX*5, -0.8));
-	//profiler.end("ray colliison");
-	//cin.get();
 }
 
 void Light::reflectRay(const Line& raySegment) {
@@ -103,21 +101,23 @@ void Light::checkRay(Line ray) {
 			if(cr.wasCollision && ray.start != cr.intersectionPt) {
 				//profiler.start();
 				player.updateChunkColors(j, INTENSITY);
-				//profiler.endAvg("omp updateChunks");
-
-				printxy(cr.intersectionPt);
+				//profiler.end("updateChunks");
 
 				raySegment.end = cr.intersectionPt;
 				raySegment.type = line.type;
 
+				omp_set_lock(&raySegmentsLock);
 				raySegments.push_back(raySegment);
+				omp_unset_lock(&raySegmentsLock);
 				
 				return reflectRay(raySegment);
 			}
 		}
 	}
 
+	omp_set_lock(&raySegmentsLock);
 	raySegments.push_back(raySegment);
+	omp_unset_lock(&raySegmentsLock);
 }
 
 void Light::draw() const {

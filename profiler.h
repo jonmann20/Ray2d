@@ -16,7 +16,7 @@ public:
 
 	void start();
 	void end(const string& str);
-	void endAvg(const string& str);
+	void avg(const string& str);
 	void stats();
 };
 

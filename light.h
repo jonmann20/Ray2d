@@ -4,6 +4,8 @@
 #include "vec.h"
 #include "line.h"
 
+#include <omp.h>
+
 #include <vector>
 using namespace std;
 
@@ -14,6 +16,7 @@ private:
 	const float INTENSITY;
 	vector<Line> raySegments;
 	vector<Line> rays;
+	omp_lock_t raySegmentsLock;
 
 public:
 	Vec2 pos;

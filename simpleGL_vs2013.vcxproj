@@ -120,6 +120,9 @@
     <ClCompile>
       <OpenMPSupport Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</OpenMPSupport>
     </ClCompile>
+    <ClCompile>
+      <OpenMPSupport Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</OpenMPSupport>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <CudaCompile Include="main.cpp" />
