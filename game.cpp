@@ -4,8 +4,7 @@
 #include "light.h"
 #include "color.h"
 
-#include <GL/glew.h>
-#include <GL/freeglut.h>
+#include <GL/glut.h>
 
 #include <vector>
 using namespace std;
@@ -63,29 +62,29 @@ void Game::drawFPS() const {
 }
 
 void Game::drawText(Vec2 pos, char* format, ...) const {
-	// Initialize a variable argument list
-	va_list args;
-	va_start(args, format);
+	// // Initialize a variable argument list
+	// va_list args;
+	// va_start(args, format);
 
-	// Return the number of characters in the string referenced the list of arguments.
-	// _vscprintf doesn't count terminating '\0' (that's why +1)
-	int len = _vscprintf(format, args) + 1;
+	// // Return the number of characters in the string referenced the list of arguments.
+	// // _vscprintf doesn't count terminating '\0' (that's why +1)
+	// int len = _vscprintf(format, args) + 1;
 
-	// Allocate memory for a string of the specified size
-	char* text = (char*)malloc(len * sizeof(char));
+	// // Allocate memory for a string of the specified size
+	// char* text = (char*)malloc(len * sizeof(char));
 
-	// Write formatted output using a pointer to the list of arguments
-	vsprintf_s(text, len, format, args);
+	// // Write formatted output using a pointer to the list of arguments
+	// vsprintf_s(text, len, format, args);
 
-	// End using variable argument list 
-	va_end(args);
+	// // End using variable argument list 
+	// va_end(args);
 
-	// Specify the raster position for pixel operations
-	glRasterPos2f(pos.x, pos.y);
+	// // Specify the raster position for pixel operations
+	// glRasterPos2f(pos.x, pos.y);
 
-	for(int i=0; text[i] != '\0'; ++i) {
-		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, text[i]);
-	}
+	// for(int i=0; text[i] != '\0'; ++i) {
+	// 	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, text[i]);
+	// }
 
-	free(text);
+	// free(text);
 }

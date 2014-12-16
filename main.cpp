@@ -1,12 +1,8 @@
-// OpenGL, OpenGl Utitliy Toolkit (GLUT)
-#include <GL/glew.h>
-#include <GL/freeglut.h>
+#include <GL/glut.h>
 
-// FlappyRay helpers
 #include "game.h"
 #include "input.h"
 #include "player.h"
-#include "profiler.h"
 
 void update() {
 	player.updatePos();
@@ -24,9 +20,9 @@ void render() {
 	// Player
 	player.draw();
 
-	// FPS
-	game.calculateFPS();
-	game.drawFPS();
+	// // FPS
+	// game.calculateFPS();
+	// game.drawFPS();
 
 	glutSwapBuffers();
 }
@@ -42,7 +38,6 @@ int main(int argc, char* argv[]) {
 
 	glutDisplayFunc(render);
 	glutIdleFunc(update);
-	//glutTimerFunc(32, update, -1);
 
 	glutIgnoreKeyRepeat(1);
 	glutKeyboardFunc(keydown);

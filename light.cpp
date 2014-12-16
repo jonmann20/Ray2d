@@ -7,19 +7,21 @@
 #include "player.h"
 #include "collision.h"
 #include "chunk.h"
-#include "profiler.h"
+#include "color.h"
 
 #include <omp.h>
 
-#include <GL/glew.h>
-#include <GL/freeglut.h>
+#include <GL/glut.h>
 
 #include <iostream>
 using namespace std;
 
 Light::Light(float x, float y, LightType type, Vec3 color, bool raysVisible /*=false*/)
-	: INTENSITY(0.1), pos(Vec2(x, y)), type(type), color(color), raysVisible(raysVisible)
-{}
+	: INTENSITY(0.1), pos(Vec2(x, y)), type(type), /*color(color),*/ raysVisible(raysVisible)
+{
+	this->color = Vec3(1, 1, 1);
+	printxyz(color);
+}
 
 void Light::checkRays() {
 	
@@ -120,7 +122,9 @@ void Light::checkRay(Line ray) {
 
 void Light::draw() const {
 	// light
-	float offsetY = 0.08;
+	const float offsetY = 0.08;
+	
+	printxyz(color);
 
 	glColor3f(color.x, color.y, color.z);
 	glBegin(GL_POLYGON);

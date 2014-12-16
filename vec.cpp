@@ -1,6 +1,6 @@
 #include "vec.h"
 
-#include <math.h>
+#include <stdlib.h>
 
 /*
 * A 2D vector
