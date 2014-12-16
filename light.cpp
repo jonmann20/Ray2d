@@ -105,6 +105,8 @@ void Light::checkRay(Line ray) {
 				player.updateChunkColors(j, INTENSITY);
 				//profiler.endAvg("omp updateChunks");
 
+				printxy(cr.intersectionPt);
+
 				raySegment.end = cr.intersectionPt;
 				raySegment.type = line.type;
 

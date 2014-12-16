@@ -25,10 +25,8 @@ CollisionResponse testLineLine(const Line& a, const Line& b) {
 	t = (s2_x * (p0_y - p2_y) - s2_y * (p0_x - p2_x)) / (-s2_x * s1_y + s1_x * s2_y);
 
 	if(s >= 0 && s <= 1 && t >= 0 && t <= 1) {
-		if(cr.intersectionPt.x != NULL)
-			cr.intersectionPt.x = p0_x + (t * s1_x);
-		if(cr.intersectionPt.y != NULL)
-			cr.intersectionPt.y = p0_y + (t * s1_y);
+		cr.intersectionPt.x = p0_x + (t * s1_x);
+		cr.intersectionPt.y = p0_y + (t * s1_y);
 
 		cr.wasCollision = true;
 		return cr;
