@@ -13,7 +13,7 @@ void update() {
 	//profiler.start();
 	game.checkRayCollision();
 	//profiler.end("checkRayCollision");
-
+	
 	glutPostRedisplay();
 }
 

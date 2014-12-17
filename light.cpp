@@ -36,7 +36,7 @@ void Light::checkRays() {
 	// Shoot out rays
 	profiler.start();
 	const int SPREAD_FACTOR = 16;
-	const int NUM_RAYS = 23;//46;
+	const int NUM_RAYS = 46;
 	const float OFFSETX = 0.04;
 	const float WIDTH = 0.32;
 	const float DTX = (WIDTH - OFFSETX*2) / NUM_RAYS;
