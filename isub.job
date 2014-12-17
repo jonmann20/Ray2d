@@ -1,0 +1,19 @@
+#!/bin/csh
+#PBS -l ncpus=64
+#PBS -l walltime=0:30
+#PBS -j oe
+#PBS -q batch
+#PBS -M jonwiedmann@gmail.com
+#PBS -m ae
+#PBS -N iFlappy32x
+
+set echo
+
+cd $SCRATCH
+cp $HOME/Ray2d/iFlappyRay.exe .
+
+setenv OMP_NUM_THREADS 32
+
+echo "running iFlappyRay.exe with $OMP_NUM_THREADS threads of 64"
+
+omplace -nt $OMP_NUM_THREADS ./iFlappyRay.exe

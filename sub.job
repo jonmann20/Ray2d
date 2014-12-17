@@ -1,0 +1,22 @@
+#!/bin/csh
+#PBS -l ncpus=16
+#PBS -l walltime=0:30
+#PBS -j oe
+#PBS -q batch
+#PBS -M jonwiedmann@gmail.com
+#PBS -m ae
+#PBS -N Flappy16
+
+set echo
+
+cd $SCRATCH
+cp $HOME/Ray2d/FlappyRay.exe .
+
+setenv OMP_NUM_THREADS 16
+
+module avail gcc
+module load gcc/4.9.2
+
+echo "running FlappyRay.exe with $OMP_NUM_THREADS threads"
+
+omplace -nt $OMP_NUM_THREADS ./FlappyRay.exe

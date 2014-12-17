@@ -21,6 +21,8 @@ int main(int argc, char* argv[]) {
 
 	const int NUM_SAMPLES = 500;
 	vector<long> times;
+
+	cout << "Max threads: " << omp_get_max_threads() << endl << endl;
     
     for(int i=0; i < NUM_SAMPLES; ++i) {
 		struct timeval start, end;

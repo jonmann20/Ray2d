@@ -1,0 +1,16 @@
+module: Command not found.
+cd /brashear/wiedmann
+cp /usr/users/1/wiedmann/Ray2d/iFlappyRay.exe .
+setenv OMP_NUM_THREADS 64
+echo running iFlappyRay.exe with 64 threads (requested 64, 0:30)
+running iFlappyRay.exe with 64 threads (requested 64, 0:30)
+omplace -nt 64 ./iFlappyRay.exe
+Max threads: 64
+
+
+500 samples taken
+
+    min:   33 ms
+    max:   63 ms
+average:   34 ms
+

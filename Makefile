@@ -1,12 +1,11 @@
 src=main.cpp vec.cpp light.cpp player.cpp line.cpp collision.cpp chunk.cpp rect.cpp utils.h
-exe=FlappyRay.exe
 
 #----- Default
 build:
-	g++ $(src) -fopenmp -std=c++11 -O3 -o $(exe)
+	g++ -fopenmp -std=c++11 -O3 $(src) -o FlappyRay.exe
 
-run:
-	./$(exe)
+iblight:
+	icpc -openmp -std=c++11 -O3 $(src) -o iFlappyRay.exe
 
 #----- Utils
 clean:

@@ -19,7 +19,7 @@ Light::Light(float x, float y, LightType type, Vec3 color, bool raysVisible /*=f
 
 void Light::checkRays() {
 	// reset player color
-	//#pragma omp parallel for
+	#pragma omp parallel for
 	for(int i=0; i < player.body.size(); ++i) {
 		player.body[i].color = player.body[i].INIT_COLOR;
 	}
@@ -35,7 +35,7 @@ void Light::checkRays() {
 	const float DTX = (WIDTH - OFFSETX*2) / NUM_RAYS;
 	const float DTX2 = (WIDTH + OFFSETX*(SPREAD_FACTOR*2)) / NUM_RAYS;
 
-	//#pragma omp parallel for
+	#pragma omp parallel for
 	for(int i=0; i < NUM_RAYS; ++i) {
 		Line ray = Line(pos.x + OFFSETX + i*DTX, pos.y, pos.x - OFFSETX*SPREAD_FACTOR + i*DTX2, -0.8);
 		checkRay(ray);
