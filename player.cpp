@@ -20,8 +20,15 @@
 
 Player player = Player();
 
+// Some good looking setting numbers
+// COLOR_INTENSITY_FALLOFF, CHUNKS_PER_AXIS, NUM_RAYS
+//  0.02,   10, 10
+//  0.015, 100, ?? 
+// 0.0005, 300, 64
+
+
 Player::Player()
-	: COLOR_INTENSITY_FALLOFF(0.01), CHUNKS_PER_AXIS(10), size(Vec2(0.25, 0.25))
+	: COLOR_INTENSITY_FALLOFF(0.0005), CHUNKS_PER_AXIS(300), size(Vec2(0.25, 0.25))
 {
 	CHUNKS = pow(CHUNKS_PER_AXIS, 2);
 
@@ -107,7 +114,7 @@ void Player::updatePos() {
 		DT = 0.005;
 	}
 	else {
-		DT = 0.01;
+		DT = 0.015;
 	}
 
 

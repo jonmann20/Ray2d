@@ -23,13 +23,14 @@ Light::Light(float x, float y, LightType type, Vec3 color, bool raysVisible /*=f
 	omp_init_lock(&raySegmentsLock);
 }
 
+// TODO: keep object on screen
 void Light::updatePos() {
 	float DT;
 	if(keysDown['f']) {
 		DT = 0.005;
 	}
 	else {
-		DT = 0.01;
+		DT = 0.015;
 	}
 
 	Vec2 newPos = pos;
@@ -75,12 +76,12 @@ void Light::checkRays() {
 	// Shoot out rays
 	//profiler.start();
 	const int SPREAD_FACTOR = 16;
-	const int NUM_RAYS = 10;//64;
+	const int NUM_RAYS = 64;
 	const float OFFSETX = 0.04;
 	const float DTX = (size.x - OFFSETX*2) / NUM_RAYS;
 	const float DTX2 = (size.x + OFFSETX*(SPREAD_FACTOR*2)) / NUM_RAYS;
 
-	//#pragma omp parallel for
+	#pragma omp parallel for
 	for(int i=0; i < NUM_RAYS; ++i) {
 		Line ray = Line(pos.x + OFFSETX + i*DTX, pos.y, pos.x - OFFSETX*SPREAD_FACTOR + i*DTX2, pos.y - 1.5);
 		checkRay(ray);
