@@ -2,6 +2,7 @@
 #define PLAYER_H_
 
 #include "chunk.h"
+#include "rect.h"
 
 #include <vector>
 #include <queue>
@@ -12,7 +13,7 @@ using namespace std;
  */
 class Player {
 private:
-	const float DT;		// player movement
+	const Vec2 size;
 	const float COLOR_INTENSITY_FALLOFF;
 	
 	const int CHUNKS_PER_AXIS;
@@ -41,6 +42,8 @@ public:
 
 	void updatePos();
 	void updateChunkColors(const int& chunkNum, const float& initIntensity);
+
+	Rect getBoundingRect() const;
 };
 
 extern Player player;

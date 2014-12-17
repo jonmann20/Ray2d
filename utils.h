@@ -37,6 +37,6 @@ const char* const DirTypes[] = {"TOP", "RIGHT", "BOT", "LEFT", "NONE"};
 #define printn_1(a)				cout << #a << ": " << a << endl
 #define printn_2(a, b)			cout << '(' << #a << ", " << #b << "): (" << a << ", " << b << ")\n"
 #define printn_3(a, b, c)		cout << '(' << #a << ", " << #b << ", " <<  #c << "): (" << a << ", " << b << ", " << c << ")\n"
-#define printn_4(a, b, c, d)	cout << '(' << #a << ", " << #b << ", " <<  #c <<  << #d << "): (" << a << ", " << b << ", " << c << ", " << d << ")\n"
+#define printn_4(a, b, c, d)	cout << '(' << #a << ", " << #b << ", " <<  #c << #d << "): (" << a << ", " << b << ", " << c << ", " << d << ")\n"
 
 #endif // UTILS_H

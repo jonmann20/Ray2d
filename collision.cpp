@@ -37,15 +37,17 @@ CollisionResponse testLineLine(const Line& a, const Line& b) {
 }
 
 CollisionResponse testRectRect(Rect a, Rect b) {
-	CollisionResponse r;
-	//r.overlapV = Vec2::ZERO;
+	CollisionResponse cr;
 
 	if(a.pos.x < (b.pos.x + b.size.x) && (a.pos.x + a.size.x) > b.pos.x &&
-	   a.pos.y < (b.pos.y + b.size.y) && (a.pos.y + a.size.y) > b.pos.y
-	   ) {
-		//cout << "hit" << endl;
-		//r.overlapV = Vec2(1, 1);
+	   a.pos.y > (b.pos.y - b.size.y) && (a.pos.y - a.size.y) < b.pos.y
+	) {
+		// TODO: intersetionPt
+
+		cr.wasCollision = true;
+		return cr;
 	}
 
-	return r;
+	cr.wasCollision = false;
+	return cr;
 }

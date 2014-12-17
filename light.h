@@ -3,6 +3,7 @@
 
 #include "vec.h"
 #include "line.h"
+#include "rect.h"
 
 #include <omp.h>
 
@@ -13,6 +14,7 @@ enum LightType { FLOURESCENT, INCANDESCENT };
 
 class Light {
 private:
+	const Vec2 size;
 	const float INTENSITY;
 	vector<Line> raySegments;
 	vector<Line> rays;
@@ -35,6 +37,8 @@ public:
 		//			reflected ray's length is equalt to the raySegment, not the original ray
 
 	void draw() const;
+
+	Rect getBoundingRect() const;
 };
 
 #endif // LIGHT_H

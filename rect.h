@@ -10,6 +10,8 @@ public:
 	Vec3 color;
 
 	Rect(float x, float y, float w, float h);
+
+	void draw() const;
 };
 
 #endif // RECT_H

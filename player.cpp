@@ -7,6 +7,7 @@
 #include "color.h"
 #include "utils.h"
 #include "profiler.h"
+#include "collision.h"
 
 #include <omp.h>
 
@@ -20,19 +21,17 @@
 Player player = Player();
 
 Player::Player()
-	: DT(0.0015), COLOR_INTENSITY_FALLOFF(0.01), CHUNKS_PER_AXIS(10)
+	: COLOR_INTENSITY_FALLOFF(0.01), CHUNKS_PER_AXIS(10), size(Vec2(0.25, 0.25))
 {
 	CHUNKS = pow(CHUNKS_PER_AXIS, 2);
 
 	pos = Vec2(0, 0);
 
 	// Initialize body chunks
-	const float w = 0.25;
-	const float h = 0.25;
 	float cx = 0;
 	float cy = 0;
-	const float cw = w/CHUNKS_PER_AXIS;
-	const float ch = h/CHUNKS_PER_AXIS;
+	const float cw = size.x/CHUNKS_PER_AXIS;
+	const float ch = size.y/CHUNKS_PER_AXIS;
 
 	for(int i=0; i < CHUNKS; ++i) {
 		body.push_back(Chunk(cx, cy, cw, ch, Color::GRAY, getChunkType(i)));
@@ -42,9 +41,13 @@ Player::Player()
 			cy -= ch;
 		}
 		else {
-			cx += w/CHUNKS_PER_AXIS;
+			cx += size.x/CHUNKS_PER_AXIS;
 		}
 	}
+}
+
+Rect Player::getBoundingRect() const {
+	return Rect(pos.x, pos.y, size.x, size.y);
 }
 
 ChunkType Player::getChunkType(const int& chunkNum) const {
@@ -99,22 +102,41 @@ void Player::draw() const {
 }
 
 void Player::updatePos() {
+	float DT;
+	if(keysDown['f']) {
+		DT = 0.005;
+	}
+	else {
+		DT = 0.01;
+	}
+
+
+	Vec2 newPos = pos;
+
 	if(keysDown['w']) {
-		pos.y += DT;
+		newPos.y = pos.y + DT;
 	}
 
 	if(keysDown['a']) {
-		pos.x -= DT;
+		newPos.x = pos.x - DT;
 	}
 
 	if(keysDown['s']) {
-		pos.y -= DT;
+		newPos.y = pos.y - DT;
 	}
 
 	if(keysDown['d']) {
-		pos.x += DT;
+		newPos.x = pos.x + DT;
 	}
 
+	
+	Rect pRect = Rect(newPos.x, newPos.y, 0.25, 0.25);
+	Rect lRect = game.lights[0].getBoundingRect();		// TODO: allow multiple lights
+	CollisionResponse cr = testRectRect(pRect, lRect);
+	if(!cr.wasCollision) {
+		pos = newPos;
+	}
+	
 	if(keysDown[32]) {			// spacebar
 		keysDown[32] = false;
 
@@ -127,8 +149,11 @@ void Player::updatePos() {
 		keysDown['p'] = false;
 		profiler.avg("ray collision");
 	}
-	// escape
-	//exit(0);
+
+	if(keysDown[27]) {		// escape
+		keysDown[27] = false;
+		exit(0);
+	}
 	
 	glutPostRedisplay();
 }
