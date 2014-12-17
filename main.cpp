@@ -1,49 +1,60 @@
-#include <GL/glut.h>
+#include "light.h"
+#include "vec.h"
 
-#include "game.h"
-#include "input.h"
-#include "player.h"
+#include <omp.h>
 
-void update() {
-	player.updatePos();
-	game.checkRayCollision();
+#include <vector>
 
-	glutPostRedisplay();
-}
+#include <sys/time.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <algorithm>
 
-void render() {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+#include <iomanip>
 
-	// Level
-	game.drawLights();
-
-	// Player
-	player.draw();
-
-	// // FPS
-	// game.calculateFPS();
-	// game.drawFPS();
-
-	glutSwapBuffers();
-}
+#include <iostream>
+using namespace std;
 
 
 int main(int argc, char* argv[]) {
-	// OpenGL setup
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
-	glutInitWindowSize(game.FULLW, game.FULLH);
-	glutInitWindowPosition(700, 40);
-	glutCreateWindow("FlappyRay Engine Demo");
+	Light light = Light(-0.2, 0.85, LightType::FLOURESCENT, Vec3(1, 1, 1), true);
 
-	glutDisplayFunc(render);
-	glutIdleFunc(update);
+	const int NUM_SAMPLES = 500;
+	vector<long> times;
+    
+    for(int i=0; i < NUM_SAMPLES; ++i) {
+		struct timeval start, end;
+    	long mtime, seconds, useconds;    
 
-	glutIgnoreKeyRepeat(1);
-	glutKeyboardFunc(keydown);
-	glutKeyboardUpFunc(keyup);
+    	gettimeofday(&start, NULL);
 
-	glutMainLoop();
+    	// profiling code
+		light.checkRays();
+
+	    gettimeofday(&end, NULL);
+
+	    seconds  = end.tv_sec  - start.tv_sec;
+	    useconds = end.tv_usec - start.tv_usec;
+    	mtime = ((seconds) * 1000 + useconds/1000.0) + 0.5;
+    	times.push_back(mtime);
+	}
+
+
+	// calculate stats
+	long sum = 0;
+	for(auto& i : times) {
+		sum += i;
+	}
+
+	//cout.precision(1);
+	//cout << fixed;
+	cout << endl;
+
+	cout << NUM_SAMPLES << " samples taken\n\n";
+	cout << setw(9) << "min: " << setw(4) << *min_element(times.begin(), times.end()) << " ms\n";
+	cout << setw(9) << "max: " << setw(4) << *max_element(times.begin(), times.end()) << " ms\n";
+	cout << setw(9) << "average: " << setw(4) << sum / times.size() << " ms\n\n";
+
 
 	return EXIT_SUCCESS;
 }

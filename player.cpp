@@ -1,15 +1,10 @@
 #include "player.h"
 
-#include "game.h"
-#include "input.h"
 #include "chunk.h"
 #include "light.h"
-#include "color.h"
 #include "utils.h"
 
 #include <omp.h>
-
-#include <GL/glut.h>
 
 #include <vector>
 #include <queue>
@@ -33,7 +28,7 @@ Player::Player()
 	const float ch = h/CHUNKS_PER_AXIS;
 
 	for(int i=0; i < CHUNKS; ++i) {
-		body.push_back(Chunk(cx, cy, cw, ch, Color::GRAY, getChunkType(i)));
+		body.push_back(Chunk(cx, cy, cw, ch, Vec3(0.1, 0.1, 0.1), getChunkType(i)));
 
 		if((i+1) % CHUNKS_PER_AXIS == 0 && i != 0) {
 			cx = 0;
@@ -79,51 +74,6 @@ ChunkType Player::getChunkType(const int& chunkNum) const {
 	}
 
 	return ChunkType::MID;
-}
-
-void Player::draw() const {
-	for(const auto& part : body) {
-		const float x = pos.x + part.rect.pos.x;
-		const float y = pos.y + part.rect.pos.y;
-
-		glColor3f(part.color.x, part.color.y, part.color.z);
-		glBegin(GL_POLYGON);
-		glVertex2f(x, y);
-		glVertex2f(x + part.rect.size.x, y);
-		glVertex2f(x + part.rect.size.x, y - part.rect.size.y);
-		glVertex2f(x, y - part.rect.size.y);
-		glEnd();
-	}
-}
-
-void Player::updatePos() {
-	if(keysDown['w']) {
-		pos.y += DT;
-	}
-
-	if(keysDown['a']) {
-		pos.x -= DT;
-	}
-
-	if(keysDown['s']) {
-		pos.y -= DT;
-	}
-
-	if(keysDown['d']) {
-		pos.x += DT;
-	}
-
-	if(keysDown[32]) {			// spacebar
-		for(auto& i : game.lights) {
-			i.raysVisible = !i.raysVisible;
-		}
-	}
-
-	if(keysDown[27]) {			// escape
-		exit(0);
-	}
-	
-	glutPostRedisplay();
 }
 
 void Player::byTopL(const int& chunkNum, const float& initIntensity) {

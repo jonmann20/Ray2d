@@ -33,10 +33,6 @@ public:
 	
 	Player();
 
-	void draw() const;
-		// EFFECTS: Draws a rectangle in chunks
-
-	void updatePos();
 	void updateChunkColors(const int& chunkNum, const float& initIntensity);
 };
 
