@@ -26,6 +26,9 @@ private:
 	void byTopR(const int& chunkNum, const float& initIntensity);
 	void byMidR(const int& chunkNum, const float& initIntensity);
 	void byMidL(const int& chunkNum, const float& initIntensity);
+	void byBotL(const int& chunkNum, const float& initIntensity);
+	void byBotM(const int& chunkNum, const float& initIntensity);
+	void byBotR(const int& chunkNum, const float& initIntensity);
 
 public:
 	Vec2 pos;

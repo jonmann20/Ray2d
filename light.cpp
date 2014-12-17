@@ -1,6 +1,5 @@
 #include "light.h"
 
-#include "game.h"
 #include "vec.h"
 #include "line.h"
 #include "utils.h"
@@ -8,6 +7,7 @@
 #include "collision.h"
 #include "chunk.h"
 #include "profiler.h"
+#include "input.h"
 
 #include <omp.h>
 
@@ -23,9 +23,29 @@ Light::Light(float x, float y, LightType type, Vec3 color, bool raysVisible /*=f
 	omp_init_lock(&raySegmentsLock);
 }
 
+void Light::updatePos() {
+	const float DT = 0.05;
+
+	if(keysDown['i']) {
+		pos.y += DT;
+	}
+
+	if(keysDown['j']) {
+		pos.x -= DT;
+	}
+
+	if(keysDown['k']) {
+		pos.y -= DT;
+	}
+
+	if(keysDown['l']) {
+		pos.x += DT;
+	}
+}
+
 void Light::checkRays() {
 	// reset player color
-	#pragma omp parallel for
+#pragma omp parallel for
 	for(int i=0; i < player.body.size(); ++i) {
 		player.body[i].color = player.body[i].INIT_COLOR;
 	}
@@ -34,22 +54,20 @@ void Light::checkRays() {
 	raySegments.clear();
 
 	// Shoot out rays
-	profiler.start();
+	//profiler.start();
 	const int SPREAD_FACTOR = 16;
-	const int NUM_RAYS = 46;
+	const int NUM_RAYS = 10;//64;
 	const float OFFSETX = 0.04;
 	const float WIDTH = 0.32;
 	const float DTX = (WIDTH - OFFSETX*2) / NUM_RAYS;
 	const float DTX2 = (WIDTH + OFFSETX*(SPREAD_FACTOR*2)) / NUM_RAYS;
 
-	#pragma omp parallel for
+	//#pragma omp parallel for
 	for(int i=0; i < NUM_RAYS; ++i) {
-		Line ray = Line(pos.x + OFFSETX + i*DTX, pos.y, pos.x - OFFSETX*SPREAD_FACTOR + i*DTX2, -0.8);
+		Line ray = Line(pos.x + OFFSETX + i*DTX, pos.y, pos.x - OFFSETX*SPREAD_FACTOR + i*DTX2, pos.y - 1.5);
 		checkRay(ray);
 	}
-	profiler.end("ray colliison");
-
-	//checkRay(Line(pos.x, pos.y, pos.x + OFFSETX*5, -0.8));
+	//profiler.end("ray colliison");
 }
 
 void Light::reflectRay(const Line& raySegment) {
@@ -72,19 +90,41 @@ void Light::reflectRay(const Line& raySegment) {
 			y = raySegment.end.y - dy;
 			break;
 		case DirType::BOT:
-			// TODO:
+			x = raySegment.end.x - dx;
+			y = raySegment.start.y;
 			break;
 		case DirType::LEFT:
 			y = raySegment.end.y - dy;
 			x = raySegment.start.x;
 			break;
 	}
-
 	return checkRay(Line(raySegment.end.x, raySegment.end.y, x, y));
 }
 
 void Light::checkRay(Line ray) {
 	Line raySegment = ray;
+
+	// window edges
+	Line window[4] = {
+		Line(-1, 1, 1, 1, DirType::BOT),	// top
+		Line(1, 1, 1, -1, DirType::LEFT),	// right
+		Line(1, -1, -1, -1, DirType::TOP),	// bot
+		Line(-1, -1, -1, 1, DirType::RIGHT)	// left
+	};
+
+	for(const auto& edge : window) {
+		CollisionResponse cr = testLineLine(ray, edge);
+		if(cr.wasCollision && ray.start != cr.intersectionPt) {
+			raySegment.end = cr.intersectionPt;
+			raySegment.type = edge.type;
+			
+			omp_set_lock(&raySegmentsLock);
+			raySegments.push_back(raySegment);
+			omp_unset_lock(&raySegmentsLock);
+
+			return reflectRay(raySegment);
+		}
+	}
 
 	for(int j=0; j < player.body.size(); ++j) {
 		for(int k=0; k < player.body[j].lines.size(); ++k) {
@@ -96,21 +136,31 @@ void Light::checkRay(Line ray) {
 			const float x2 = player.pos.x + line.end.x;
 			const float y2 = player.pos.y + line.end.y;
 
-			CollisionResponse cr = testLineLine(ray, Line(x, y, x2, y2));
+			// fix line order (e.g. ray from below hitting bottom of top line before checking bottom line)
+			if(((ray.start.y >= line.start.y) && (ray.start.y >= line.end.y) && (line.type == DirType::BOT))   ||	// top line
+			   ((ray.start.y <= line.start.y) && (ray.start.y <= line.end.y) && (line.type == DirType::TOP))   ||	// bot line
+			   ((ray.start.x <= line.start.x) && (ray.start.x <= line.end.x) && (line.type == DirType::RIGHT)) ||	// left line
+			   ((ray.start.x >= line.start.x) && (ray.start.x >= line.end.x) && (line.type == DirType::LEFT))		// right line
+			) {
+				// do nothing
+			}
+			else {
+				CollisionResponse cr = testLineLine(ray, Line(x, y, x2, y2));
 
-			if(cr.wasCollision && ray.start != cr.intersectionPt) {
-				//profiler.start();
-				player.updateChunkColors(j, INTENSITY);
-				//profiler.end("updateChunks");
+				if(cr.wasCollision && ray.start != cr.intersectionPt) {
+					//profiler.start();
+					player.updateChunkColors(j, INTENSITY);
+					//profiler.end("updateChunks");
 
-				raySegment.end = cr.intersectionPt;
-				raySegment.type = line.type;
+					raySegment.end = cr.intersectionPt;
+					raySegment.type = line.type;
 
-				omp_set_lock(&raySegmentsLock);
-				raySegments.push_back(raySegment);
-				omp_unset_lock(&raySegmentsLock);
-				
-				return reflectRay(raySegment);
+					omp_set_lock(&raySegmentsLock);
+					raySegments.push_back(raySegment);
+					omp_unset_lock(&raySegmentsLock);
+
+					return reflectRay(raySegment);
+				}
 			}
 		}
 	}
@@ -139,23 +189,3 @@ void Light::draw() const {
 		}
 	}
 }
-
-
-
-//// window edges
-//Line window[4] ={
-//	Line(0, 0, game.FULLW, 0),			// top
-//	Line(game.FULLW, 0, game.FULLW, game.FULLH),	// right
-//	Line(game.FULLW, game.FULLH, 0, game.FULLH),	// bot
-//	Line(0, game.FULLH, 0, 0)			// left
-//};
-
-//for(auto edge : window) {
-//	CollisionResponse cr = testLineLine(ray, edge);
-//	if(cr.wasCollision && ray.start != cr.intersectionPt) {
-//		raySegment.end = cr.intersectionPt;
-//		raySegments.push_back(raySegment);
-
-//		return checkRay(Line(cr.intersectionPt.x, cr.intersectionPt.y, 0, 0));	// TODO: calc endPt
-//	}
-//}

@@ -26,6 +26,8 @@ public:
 	
 	Light(float x, float y, LightType type, Vec3 color, bool raysVisible=false);
 
+	void updatePos();
+
 	void checkRays();
 	void checkRay(Line ray);
 	void reflectRay(const Line& raySegment);

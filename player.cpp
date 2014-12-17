@@ -20,7 +20,7 @@
 Player player = Player();
 
 Player::Player()
-	: DT(0.0015), COLOR_INTENSITY_FALLOFF(0.001), CHUNKS_PER_AXIS(300)
+	: DT(0.0015), COLOR_INTENSITY_FALLOFF(0.01), CHUNKS_PER_AXIS(10)
 {
 	CHUNKS = pow(CHUNKS_PER_AXIS, 2);
 
@@ -116,6 +116,8 @@ void Player::updatePos() {
 	}
 
 	if(keysDown[32]) {			// spacebar
+		keysDown[32] = false;
+
 		for(auto& i : game.lights) {
 			i.raysVisible = !i.raysVisible;
 		}
@@ -241,8 +243,8 @@ void Player::byMidR(const int& chunkNum, const float& initIntensity) {
 				}
 			}
 
-			// bottom row
-			if(i <= offsetB) {
+			// bottom row - 1st iteration
+			if(i <= offsetB && i !=0) {
 				for(int j=0; j <= i; ++j) {
 					player.body[chunkNum + i*CHUNKS_PER_AXIS - j].color.add(newIntensity);
 				}
@@ -282,11 +284,90 @@ void Player::byMidL(const int& chunkNum, const float& initIntensity) {
 				}
 			}
 
-			// bottom row
-			if(i <= offsetB) {
+			// bottom row - 1st iteration
+			if(i <= offsetB && i != 0) {
 				for(int j=0; j <= i; ++j) {
 					player.body[chunkNum + i*CHUNKS_PER_AXIS + j].color.add(newIntensity);
 				}
+			}
+		}
+	}
+}
+
+void Player::byBotL(const int& chunkNum, const float& initIntensity) {
+	//#pragma omp parallel for
+	for(int i=0; i < CHUNKS_PER_AXIS; ++i) {
+		const float newIntensity = initIntensity - i*COLOR_INTENSITY_FALLOFF;
+
+		if(newIntensity > 0) {
+			// right column - top right
+			for(int j=0; j < i; ++j) {
+				player.body[chunkNum + i - j*CHUNKS_PER_AXIS].color.add(newIntensity);
+			}
+
+			// top row
+			for(int j=0; j <= i; ++j) {
+				player.body[chunkNum - i*CHUNKS_PER_AXIS + j].color.add(newIntensity);
+			}
+		}
+	}
+}
+
+void Player::byBotM(const int& chunkNum, const float& initIntensity) {
+	const int offsetR = CHUNKS - 1 - chunkNum;
+	const int offsetL = CHUNKS_PER_AXIS - offsetR - 1;
+
+	//#pragma omp parallel for
+	for(int i=0; i < CHUNKS_PER_AXIS; ++i) {
+		const float newIntensity = initIntensity - i*COLOR_INTENSITY_FALLOFF;
+
+		if(newIntensity > 0) {
+			// left column - top left
+			if(i <= offsetL) {
+				for(int j=0; j < i; ++j) {
+					player.body[chunkNum - i - j*CHUNKS_PER_AXIS].color.add(newIntensity);
+				}
+			}
+
+			// right column - top right
+			if(i <= offsetR) {
+				for(int j=0; j < i; ++j) {
+					player.body[chunkNum + i - j*CHUNKS_PER_AXIS].color.add(newIntensity);
+				}
+			}
+
+			// top row
+			for(int j=0; j <= i; ++j) {
+				// left half
+				if(j <= offsetL) {
+					player.body[chunkNum - i*CHUNKS_PER_AXIS - j].color.add(newIntensity);
+				}
+
+				// right half - middle
+				if(j <= offsetR) {
+					if((chunkNum - i*CHUNKS_PER_AXIS - j) != (chunkNum - i*CHUNKS_PER_AXIS + j)) {
+						player.body[chunkNum - i*CHUNKS_PER_AXIS + j].color.add(newIntensity);
+					}
+				}
+			}
+		}
+	}
+}
+
+void Player::byBotR(const int& chunkNum, const float& initIntensity) {
+	//#pragma omp parallel for
+	for(int i=0; i < CHUNKS_PER_AXIS; ++i) {
+		const float newIntensity = initIntensity - i*COLOR_INTENSITY_FALLOFF;
+
+		if(newIntensity > 0) {
+			// left column - top left
+			for(int j=0; j < i; ++j) {
+				player.body[chunkNum - i - j*CHUNKS_PER_AXIS].color.add(newIntensity);
+			}
+
+			// top row
+			for(int j=0; j <= i; ++j) {
+				player.body[chunkNum - i*CHUNKS_PER_AXIS - j].color.add(newIntensity);
 			}
 		}
 	}
@@ -299,5 +380,8 @@ void Player::updateChunkColors(const int& chunkNum, const float& initIntensity) 
 		case ChunkType::TOP_RIGHT:	return byTopR(chunkNum, initIntensity);
 		case ChunkType::MID_RIGHT:	return byMidR(chunkNum, initIntensity);
 		case ChunkType::MID_LEFT:	return byMidL(chunkNum, initIntensity);
+		case ChunkType::BOT_LEFT:	return byBotL(chunkNum, initIntensity);
+		case ChunkType::BOT_MID:	return byBotM(chunkNum, initIntensity);
+		case ChunkType::BOT_RIGHT:	return byBotR(chunkNum, initIntensity);
 	}
 }

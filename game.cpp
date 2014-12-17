@@ -28,6 +28,7 @@ void Game::drawLights() const {
 
 void Game::checkRayCollision() {
 	for(Light& light : lights) {
+		light.updatePos();	// TODO: move to a better place
 		light.checkRays();
 	}
 }
