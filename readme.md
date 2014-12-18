@@ -1,14 +1,21 @@
 Ray2d
 =====
 
+Controls
+--------
+
+* move player (rect): WASD
+* move light: IJKL
+* move speed: hold f
+* toggle rays on/off: spacebar
+* exit: escape
+
+
 TODO
 ----
-1. Trig/angles for ray bounces
-	* allows non-axis alligned objects
-2. Light color + object color blending
-3. non-rect objects
-4. Bounce rays off screen "walls"
-5. Rotatable light, dynamicly initial created rays
+1. Light color + object color blending
+2. Non-rectangular objects
+3. Rotatable light
 
 
 OpenGL Notes
